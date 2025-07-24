@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crioser Facturación Profesional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* CSS general */
+        :root {
+            --primary-blue: #00204d; /* Azul marino muy oscuro para que el logo resalte */
+            --light-blue: #007bff;   /* Azul para botones y acentos */
+            --accent-green: #28a745; /* Verde para éxito/añadir */
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh; /* Changed to 100vh to ensure footer is at bottom */
+            flex-direction: column;
+        }
+
+        /* Barra de navegación lateral */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+        }
+
+        .sidebar .logo {
+            width: 150px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            font-size: 1.05em;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background-color: var(--light-blue);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            flex-grow: 1;
+            width: calc(100% - 250px);
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            color: var(--primary-blue);
+            font-size: 2em;
+            margin: 0;
+        }
+
+        /* REMOVED user-info styles as requested */
+        /*
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info span {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        */
+
+        /* Secciones */
+        .section {
+            display: none;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h2 {
+            color: var(--light-blue);
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* Resumen en Home */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background-color: var(--light-blue);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .summary-card.green { background-color: var(--accent-green); }
+        .summary-card.blue { background-color: #007bff; }
+        .summary-card.purple { background-color: #6f42c1; }
+
+        .summary-card i {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .summary-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+
+        .summary-card p {
+            font-size: 1.1em;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Formularios y tablas */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+        
+        /* Estilo específico para input[type="file"] */
+        input[type="file"] {
+            padding: 8px; /* Ajusta el padding para que no se vea como un input de texto normal */
+        }
+
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .item-list {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--light-bg);
+        }
+
+        .item-row {
+            /* Adjusted grid template for new fields */
+            display: grid;
+            /* Changed grid-template-columns: 2fr 1fr 1fr 1fr 1fr 50px; to accommodate "Descripción Adicional" instead of "Unidad" */
+            grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 50px; /* Desc, Desc.Adicional, Cant, P.Unitario, Total, Btn */
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted var(--border-color);
+        }
+        /* Specific widths for smaller input in item row */
+        .item-row .form-group:nth-child(2) input { /* Descripcion Adicional */
+            width: 100%;
+        }
+        .item-row .form-group:nth-child(3) input { /* Cant */
+            width: 80px;
+        }
+        .item-row .form-group:nth-child(4) input { /* P. Unitario */
+            width: 120px;
+        }
+
+
+        .item-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .item-row input, .item-row select {
+            margin-bottom: 0; /* Anula el margin-bottom del form-group */
+        }
+
+        .remove-item-btn {
+            background-color: #dc3545; /* Rojo para eliminar */
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px; /* Ancho fijo para el botón */
+            height: 40px; /* Alto fijo para el botón */
+        }
+
+        .remove-item-btn:hover {
+            background-color: #c82333;
+        }
+
+        .add-item-btn {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .add-item-btn:hover {
+            background-color: #218838;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .total-section label {
+            margin-right: 15px;
+        }
+
+        .total-section span {
+            min-width: 150px;
+            text-align: right;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--light-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--accent-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Tabla de facturas */
+        .invoice-table-container {
+            overflow-x: auto; /* Permite scroll horizontal en tablas grandes */
+            margin-top: 20px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-table th, .invoice-table td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .invoice-table th {
+            background-color: var(--light-blue);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .invoice-table tbody tr:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+
+        .invoice-table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .invoice-table .actions button {
+            margin-right: 8px;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            border-radius: 6px;
+        }
+
+        /* Status styling */
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: white;
+            font-size: 0.8em;
+        }
+
+        .status.pendiente { background-color: #ffc107; } /* Warning yellow */
+        .status.realizado { background-color: var(--accent-green); } /* Success green */
+        .status.enproceso { background-color: var(--light-blue); } /* Info blue */
+
+
+        /* Pie de página */
+        footer {
+            margin-top: auto; /* Empuja el footer al final */
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            background-color: #e9ecef;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9em;
+        }
+
+        /* Template de PDF (oculto por defecto) */
+        .pdf-template {
+            width: 612pt; /* Ancho de Carta en puntos */
+            /* height: 841.89pt; /* Alto de A4 en puntos */ /* Removed fixed height, let content define it for html2canvas */
+            padding: 40pt; /* Equivalente a 1cm de margen, 1pt = 1/72 pulgada */
+            box-sizing: border-box;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            display: none; /* Oculto por defecto */
+            flex-direction: column; /* Para organizar el contenido verticalmente */
+            justify-content: space-between; /* Espacio entre header, content y footer */
+        }
+
+        /* Estilos del encabezado del PDF */
+        .pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Alinea arriba el logo e info */
+            margin-bottom: 40pt;
+            padding-bottom: 10pt;
+            border-bottom: 2pt solid var(--primary-blue); /* Línea divisoria */
+        }
+
+        .pdf-header img {
+            max-width: 120pt; /* Tamaño del logo en el PDF */
+            height: auto;
+            margin-left: 20pt; /* Space between logo and info, changed to left for right alignment */
+        }
+
+        .pdf-header-info {
+            text-align: left; /* Changed to left */
+            font-size: 10pt;
+            line-height: 1.4;
+        }
+
+        .pdf-header-info h1 {
+            color: var(--primary-blue);
+            font-size: 16pt;
+            margin-bottom: 5pt;
+        }
+
+        .pdf-header-info p {
+            margin: 0;
+        }
+
+        /* Estilos de información del cliente y factura */
+        .pdf-invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30pt;
+            border: 1pt solid #ddd;
+            padding: 15pt;
+            border-radius: 5pt;
+            background-color: #f9f9f9;
+        }
+
+        .pdf-invoice-details div {
+            flex: 1;
+            font-size: 10pt;
+            line-height: 1.5;
+        }
+
+        .pdf-invoice-details h3 {
+            color: var(--light-blue);
+            font-size: 12pt;
+            margin-bottom: 10pt;
+            border-bottom: 1pt solid #eee;
+            padding-bottom: 5pt;
+        }
+
+        .pdf-invoice-details p {
+            margin: 0;
+            margin-bottom: 5pt;
+        }
+
+        .pdf-invoice-details strong {
+            color: var(--primary-blue);
+        }
+
+        /* Estilos de la tabla de ítems del PDF */
+        .pdf-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30pt;
+        }
+
+        .pdf-items-table th, .pdf-items-table td {
+            border: 1pt solid #ddd;
+            padding: 10pt;
+            text-align: left;
+            font-size: 9pt;
+        }
+
+        .pdf-items-table th {
+            background-color: var(--light-blue);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .pdf-items-table tbody tr:nth-child(even) {
+            background-color: #f0f0f0;
+        }
+
+        .pdf-items-table .text-right {
+            text-align: right;
+        }
+
+        .pdf-total-section {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 11pt;
+            font-weight: 700;
+            margin-top: 20pt;
+            border-top: 2pt solid var(--primary-blue);
+            padding-top: 10pt;
+        }
+
+        .pdf-total-section div {
+            width: 200pt;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pdf-notes {
+            margin-top: 30pt;
+            font-size: 9pt;
+            line-height: 1.5;
+            padding: 10pt;
+            background-color: #f9f9f9;
+            border: 1pt solid #eee;
+            border-radius: 5pt;
+        }
+
+        .pdf-notes h4 {
+            font-size: 10pt;
+            margin-bottom: 5pt;
+            color: var(--primary-blue);
+        }
+
+        /* Estilos del pie de página del PDF */
+        .pdf-footer {
+            margin-top: auto; /* Empuja el footer al final de la página */
+            text-align: center;
+            font-size: 8pt;
+            color: #666;
+            border-top: 1pt solid #eee;
+            padding-top: 10pt;
+        }
+
+        /* Estilos de impresión para ocultar la interfaz de usuario */
+        @media print {
+            body > *:not(.pdf-template) {
+                display: none !important;
+            }
+            .pdf-template {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+        }
+
+        /* --- Estilos para Mensajes Emergentes Personalizados --- */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-alert-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-alert-box {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .custom-alert-overlay.visible .custom-alert-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .custom-alert-box h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .custom-alert-box p {
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            color: var(--text-color);
+        }
+
+        .custom-alert-box .alert-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-alert-box .alert-buttons button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .custom-alert-box .alert-buttons .btn-ok {
+            background-color: var(--light-blue);
+            color: white;
+        }
+        .custom-alert-box .alert-buttons .btn-ok:hover {
+            background-color: #0056b3;
+        }
+
+        .custom-alert-box .alert-buttons .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+        .custom-alert-box .alert-buttons .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+        /* Colores para tipos de alerta */
+        .custom-alert-box.success h3 { color: var(--accent-green); }
+        .custom-alert-box.error h3 { color: #dc3545; }
+        .custom-alert-box.warning h3 { color: #ffc107; }
+
+        /* Toast notifications (for simple alerts) */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column-reverse; /* Newest toast at bottom */
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            min-width: 250px;
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success { background-color: var(--accent-green); }
+        .toast.error { background-color: #dc3545; }
+        .toast.warning { background-color: #ffc107; color: #333; } /* Warning text color changed */
+        .toast.info { background-color: var(--light-blue); }
+
+        .toast i {
+            font-size: 1.2em;
+        }
+
+        /* MEDIA QUERIES FOR RESPONSIVE DESIGN */
+
+        @media (max-width: 768px) {
+            /* Adjust sidebar behavior */
+            .sidebar {
+                width: 100%; /* Take full width */
+                height: auto; /* Height adapts to content */
+                position: relative; /* Not fixed anymore */
+                box-shadow: none;
+                padding: 10px;
+            }
+
+            .sidebar .logo {
+                width: 100px; /* Smaller logo */
+                margin-bottom: 10px;
+            }
+
+            .sidebar ul {
+                flex-direction: row; /* Make menu horizontal */
+                justify-content: space-around;
+                flex-wrap: wrap; /* Allow items to wrap */
+                font-size: 0.9em;
+            }
+
+            .sidebar ul li {
+                margin-bottom: 5px;
+                width: auto; /* Let items take natural width */
+            }
+
+            .sidebar ul li a {
+                padding: 8px 10px;
+            }
+
+            .sidebar ul li a i {
+                margin-right: 8px;
+                font-size: 1em;
+            }
+
+            /* Adjust main content */
+            .main-content {
+                margin-left: 0; /* Remove fixed margin */
+                width: 100%; /* Take full width */
+                padding: 15px; /* Adjust padding */
+            }
+
+            header {
+                flex-direction: column; /* Stack header elements */
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+
+            header h1 {
+                font-size: 1.5em; /* Smaller font size */
+            }
+
+            /* Adjust summary cards */
+            .summary-cards {
+                grid-template-columns: 1fr; /* Stack cards vertically */
+                gap: 15px;
+            }
+
+            /* Adjust item rows for smaller screens */
+            .item-row {
+                grid-template-columns: 1fr; /* Stack inputs vertically */
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .item-row .form-group:nth-child(2) input, /* Descripcion Adicional */
+            .item-row .form-group:nth-child(3) input, /* Cant */
+            .item-row .form-group:nth-child(4) input { /* P. Unitario */
+                width: 100%; /* Make inputs take full width */
+            }
+
+            .remove-item-btn {
+                width: 100%; /* Make button full width */
+                height: auto;
+                padding: 10px;
+            }
+
+            .total-section {
+                flex-direction: column; /* Stack total labels and values */
+                align-items: flex-end;
+                font-size: 1em;
+            }
+
+            .button-group {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%; /* Make buttons full width */
+                padding: 10px 15px;
+                font-size: 0.95em;
+            }
+
+            .invoice-table th, .invoice-table td {
+                padding: 8px; /* Reduce padding for table cells */
+                font-size: 0.8em;
+            }
+
+            .invoice-table .actions button {
+                margin-right: 5px;
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+
+            /* Adjust custom alerts/toasts for smaller screens */
+            .custom-alert-box {
+                padding: 20px;
+                width: 95%; /* Adjust width */
+            }
+
+            .custom-alert-box h3 {
+                font-size: 1.2em;
+            }
+
+            .custom-alert-box p {
+                font-size: 0.95em;
+            }
+
+            .custom-alert-box .alert-buttons button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            .toast-container {
+                bottom: 10px;
+                right: 10px;
+                left: 10px; /* Allow toasts to span width */
+                align-items: center;
+            }
+
+            .toast {
+                min-width: unset; /* Remove min-width constraint */
+                max-width: 100%; /* Take full available width */
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 0.9em; /* Even smaller base font size */
+            }
+
+            .main-content {
+                padding: 10px; /* Further reduce padding */
+            }
+
+            header h1 {
+                font-size: 1.3em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .sidebar ul li a {
+                padding: 6px 8px; /* Even smaller padding for menu items */
+                font-size: 0.9em;
+            }
+
+            .summary-card h3 {
+                font-size: 1.3em;
+            }
+
+            .summary-card p {
+                font-size: 1em;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            textarea,
+            select {
+                padding: 10px; /* Smaller input padding */
+                font-size: 0.9em;
+            }
+
+            .item-list {
+                padding: 15px; /* Smaller item list padding */
+            }
+
+            .item-row {
+                gap: 8px; /* Reduce gap in item rows */
+            }
+
+            .total-section {
+                font-size: 0.9em; /* Smaller total section font */
+            }
+
+            .btn {
+                padding: 8px 12px; /* Smaller button padding */
+                font-size: 0.9em;
+            }
+
+            .invoice-table th, .invoice-table td {
+                padding: 6px; /* Further reduce table padding */
+                font-size: 0.75em;
+            }
+
+            .pdf-template {
+                /* ... propiedades existentes ... */
+                /* New CSS for better text rendering */
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="LogoCompleto.png" alt="Logo Crioser" class="logo">
+        <ul>
+            <li><a href="#" onclick="showSection('homeSection')" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="#" onclick="showSection('createInvoiceSection')"><i class="fas fa-file-invoice"></i> Crear Factura</a></li>
+            <li><a href="#" onclick="showSection('manageInvoicesSection')"><i class="fas fa-list-alt"></i> Gestionar Facturas</a></li>
+            <li><a href="#" onclick="showSection('settingsSection')"><i class="fas fa-cogs"></i> Ajustes</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Panel de Control</h1>
+        </header>
+
+        <section id="homeSection" class="section active">
+            <h2>Resumen</h2>
+            <div class="summary-cards">
+                <div class="summary-card blue">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <h3>Facturas Totales</h3>
+                    <p id="totalInvoices">0</p>
+                </div>
+                <div class="summary-card green">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Ganancias Totales</h3>
+                    <p id="totalEarnings">$0.00</p>
+                </div>
+                <div class="summary-card purple">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Facturas Este Año</h3>
+                    <p id="invoicesThisYear">0</p>
+                </div>
+            </div>
+            <h3>Últimas Facturas</h3>
+            <div class="invoice-table-container">
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th># Factura</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="latestInvoicesTableBody">
+                        <tr><td colspan="5" style="text-align: center;">No hay facturas recientes.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="createInvoiceSection" class="section">
+            <h2>Crear Nueva Factura</h2>
+            <form id="invoiceForm">
+                <input type="hidden" id="invoiceId">
+                <div class="form-group">
+                    <label for="tipoDocumento">Tipo de Documento:</label>
+                    <select id="tipoDocumento" name="tipoDocumento" onchange="generateInvoiceNumber()">
+                        <option value="Factura de Servicio / Venta">Factura de Servicio / Venta</option>
+                        <option value="Cotización">Cotización</option>
+                        <option value="Orden de Servicio">Orden de Servicio</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fechaFactura">Fecha:</label>
+                    <input type="date" id="fechaFactura" name="fechaFactura" required>
+                </div>
+                <div class="form-group">
+                    <label for="numeroFactura">Número de Documento:</label>
+                    <input type="text" id="numeroFactura" name="numeroFactura" required readonly>
+                </div>
+                <div class="form-group">
+                    <h3>Datos del Cliente</h3>
+                    <label for="clienteNombre">Nombre del Cliente / Empresa:</label>
+                    <input type="text" id="clienteNombre" name="clienteNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="clienteDireccion">Dirección:</label>
+                    <input type="text" id="clienteDireccion" name="clienteDireccion">
+                </div>
+                <div class="form-group">
+                    <label for="clienteNIT">NIT / C.C.:</label>
+                    <input type="text" id="clienteNIT" name="clienteNIT">
+                </div>
+                <div class="form-group">
+                    <label for="solicitante">Solicitante:</label>
+                    <input type="text" id="solicitante" name="solicitante">
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo Electrónico:</label>
+                    <input type="email" id="correo" name="correo">
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono:</label>
+                    <input type="text" id="telefono" name="telefono">
+                </div>
+                <h3>Detalles de la Factura</h3>
+                <div id="itemsContainer" class="item-list">
+                </div>
+                <button type="button" class="add-item-btn" onclick="addItem()">Añadir Ítem</button>
+                <div class="total-section">
+                    <label>Subtotal:</label>
+                    <span id="subtotalDisplay">$0.00</span>
+                </div>
+                <div class="form-group">
+                    <label for="impuesto">Impuesto (%):</label>
+                    <input type="number" id="impuesto" name="impuesto" min="0" value="0" oninput="calculateTotal()">
+                </div>
+                <div class="form-group">
+                    <label for="descuento">Descuento (valor numérico):</label>
+                    <input type="number" id="descuento" name="descuento" min="0" value="0" oninput="calculateTotal()">
+                </div>
+                <div class="total-section">
+                    <label>Total a Pagar:</label>
+                    <span id="totalDisplay">$0.00</span>
+                </div>
+                <div class="form-group">
+                    <label for="notas">Notas / Observaciones:</label>
+                    <textarea id="notas" name="notas"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Guardar Factura</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="generatePdf()">Generar PDF</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="manageInvoicesSection" class="section">
+            <h2>Gestionar Facturas</h2>
+            <input type="text" id="searchInvoice" placeholder="Buscar por cliente, # factura..." onkeyup="filterInvoices()">
+            <div class="invoice-table-container">
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th># Documento</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoicesTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="settingsSection" class="section">
+            <h2>Ajustes</h2>
+            <div class="form-group">
+                <label for="companyName">Nombre de la Empresa:</label>
+                <input type="text" id="companyName">
+            </div>
+            <div class="form-group">
+                <label for="companyAddress">Dirección de la Empresa:</label>
+                <input type="text" id="companyAddress">
+            </div>
+            <div class="form-group">
+                <label for="companyPhone">Teléfono de la Empresa:</label>
+                <input type="text" id="companyPhone">
+            </div>
+            <div class="form-group">
+                <label for="companyEmail">Correo de la Empresa:</label>
+                <input type="email" id="companyEmail">
+            </div>
+            <div class="form-group">
+                <label for="companyNIT">NIT de la Empresa:</label>
+                <input type="text" id="companyNIT">
+            </div>
+            <div class="form-group">
+                <label for="companyLogoFile">Subir Logo (para PDF):</label>
+                <input type="file" id="companyLogoFile" accept="image/*" onchange="previewLogo(event)">
+                <img id="companyLogoPreview" src="" alt="Previsualización del Logo" style="max-width: 150px; height: auto; margin-top: 10px; display: none;">
+                <button type="button" class="btn btn-secondary" style="margin-top: 10px;" onclick="clearLogo()">Limpiar Logo</button>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">Guardar Ajustes</button>
+        </section>
+    </div>
+
+    <footer>
+        <p>© <span id="currentYear"></span> Crioser. Todos los derechos reservados.</p>
+    </footer>
+
+    <div class="custom-alert-overlay" id="customAlertOverlay">
+        <div class="custom-alert-box" id="customAlertBox">
+            <h3 id="customAlertTitle"></h3>
+            <p id="customAlertMessage"></p>
+            <div class="alert-buttons" id="customAlertButtons">
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="pdf-template">
+        <div class="pdf-header">
+            <div class="pdf-header-info">
+                <h1 id="pdfHeaderCompanyName">Nombre de tu Empresa</h1>
+                <p id="pdfCompanyAddress">Dirección de tu Empresa</p>
+                <p id="pdfCompanyPhone">Teléfono: (XXX) XXX-XXXX</p>
+                <p id="pdfCompanyEmail">Email: tu_correo@empresa.com</p>
+                <p id="pdfCompanyNIT">NIT: XXX.XXX.XXX-X</p>
+            </div>
+            <img id="pdfCompanyLogo" src="LogoCompleto.png" alt="Logo de tu Empresa" style="max-width: 120pt; height: auto;">
+        </div>
+
+        <div class="pdf-invoice-details">
+            <div>
+                <h3>Cliente:</h3>
+                <p><strong>Nombre:</strong> <span id="pdfClienteNombre"></span></p>
+                <p><strong>Dirección:</strong> <span id="pdfClienteDireccion"></span></p>
+                <p><strong>NIT/CC:</strong> <span id="pdfClienteNIT"></span></p>
+                <p><strong>Solicitante:</strong> <span id="pdfSolicitante"></span></p>
+                <p><strong>Correo:</strong> <span id="pdfCorreo"></span></p>
+                <p><strong>Teléfono:</strong> <span id="pdfTelefono"></span></p>
+            </div>
+            <div>
+                <h3>Documento:</h3>
+                <p><strong>Tipo:</strong> <span id="pdfTipoDocumento"></span></p>
+                <p><strong>Número:</strong> <span id="pdfNumeroFactura"></span></p>
+                <p><strong>Fecha:</strong> <span id="pdfFechaFactura"></span></p>
+                <p><strong>Emitido por:</strong> <span id="pdfCompanyName"></span></p>
+            </div>
+        </div>
+
+        <table class="pdf-items-table">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Descripción Adicional</th>
+                    <th class="text-right">Cantidad</th>
+                    <th class="text-right">Precio Unitario</th>
+                    <th class="text-right">Total</th>
+                </tr>
+            </thead>
+            <tbody id="pdfItemsTableBody">
+            </tbody>
+        </table>
+
+        <div class="pdf-total-section">
+            <div>
+                <span>Subtotal:</span>
+                <span id="pdfSubtotal">$0.00</span>
+            </div>
+        </div>
+        <div class="pdf-total-section">
+            <div>
+                <span>Impuesto (<span id="pdfImpuestoPct">0</span>%):</span>
+                <span id="pdfImpuestoVal">$0.00</span>
+            </div>
+        </div>
+        <div class="pdf-total-section">
+            <div>
+                <span>Descuento:</span>
+                <span id="pdfDescuentoVal">$0.00</span>
+            </div>
+        </div>
+        <div class="pdf-total-section">
+            <div>
+                <span>TOTAL A PAGAR:</span>
+                <span id="pdfTotal">$0.00</span>
+            </div>
+        </div>
+
+        <div class="pdf-notes">
+            <h4>Notas / Observaciones:</h4>
+            <p id="pdfNotas"></p>
+        </div>
+
+        <div class="pdf-footer">
+            <p>Gracias por tu preferencia.</p>
+            <p>Este documento es una <span id="pdfTipoDocumentoFooter"></span> generada digitalmente. Crioser © <span id="pdfCurrentYear"></span>.</p>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales para almacenar datos
+        let invoices = [];
+        let currentEditingInvoiceId = null; // Para saber si estamos editando una factura
+        const LOCAL_STORAGE_KEY = 'crioser_facturas_data';
+        const SETTINGS_STORAGE_KEY = 'crioser_settings';
+        const LAST_NUMBER_KEY = 'crioser_last_document_numbers';
+
+        // Objeto global para almacenar los ajustes
+        let settings = {};
+
+        // Custom Alert & Confirm Functions
+        const customAlertOverlay = document.getElementById('customAlertOverlay');
+        const customAlertBox = document.getElementById('customAlertBox');
+        const customAlertTitle = document.getElementById('customAlertTitle');
+        const customAlertMessage = document.getElementById('customAlertMessage');
+        const customAlertButtons = document.getElementById('customAlertButtons');
+        const toastContainer = document.getElementById('toastContainer');
+
+        function showAlert(message, type = 'info', duration = 3000) {
+            const toast = document.createElement('div');
+            toast.classList.add('toast', type);
+            let icon = '';
+            switch(type) {
+                case 'success': icon = '<i class="fas fa-check-circle"></i>'; break;
+                case 'error': icon = '<i class="fas fa-times-circle"></i>'; break;
+                case 'warning': icon = '<i class="fas fa-exclamation-triangle"></i>'; break;
+                case 'info': icon = '<i class="fas fa-info-circle"></i>'; break;
+            }
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            toastContainer.appendChild(toast);
+            // Trigger reflow to apply initial transform before showing
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.addEventListener('transitionend', () => toast.remove());
+            }, duration);
+        }
+
+        function showConfirm(message, onConfirmCallback, onCancelCallback = () => {}) {
+            customAlertTitle.textContent = 'Confirmación';
+            customAlertMessage.textContent = message;
+            customAlertBox.className = 'custom-alert-box info'; // Reset class and set default type
+            customAlertButtons.innerHTML = `
+                <button class="btn-ok">Sí</button>
+                <button class="btn-cancel">No</button>
+            `;
+
+            const btnOk = customAlertButtons.querySelector('.btn-ok');
+            const btnCancel = customAlertButtons.querySelector('.btn-cancel');
+
+            const closeAlert = () => {
+                customAlertOverlay.classList.remove('visible');
+                btnOk.removeEventListener('click', handleConfirm);
+                btnCancel.removeEventListener('click', handleCancel);
+            };
+
+            const handleConfirm = () => {
+                closeAlert();
+                onConfirmCallback();
+            };
+
+            const handleCancel = () => {
+                closeAlert();
+                onCancelCallback();
+            };
+
+            btnOk.addEventListener('click', handleConfirm);
+            btnCancel.addEventListener('click', handleCancel);
+
+            customAlertOverlay.classList.add('visible');
+        }
+
+        // Cargar ajustes y datos guardados al iniciar
+        function loadData() {
+            const storedInvoices = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (storedInvoices) {
+                invoices = JSON.parse(storedInvoices);
+            }
+            loadSettings(); // Cargar ajustes
+        }
+
+        // Guardar datos en localStorage
+        function saveData() {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(invoices));
+        }
+
+        function loadSettings() {
+            const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+            if (storedSettings) {
+                settings = JSON.parse(storedSettings);
+            } else {
+                settings = {}; // Inicializar si no hay ajustes guardados
+            }
+
+            // Poblar campos del formulario de ajustes
+            document.getElementById('companyName').value = settings.companyName || '';
+            document.getElementById('companyAddress').value = settings.companyAddress || '';
+            document.getElementById('companyPhone').value = settings.companyPhone || '';
+            document.getElementById('companyEmail').value = settings.companyEmail || '';
+            document.getElementById('companyNIT').value = settings.companyNIT || '';
+
+            // Cargar y mostrar previsualización del logo Base64
+            const companyLogoPreview = document.getElementById('companyLogoPreview');
+            if (settings.companyLogoBase64) {
+                companyLogoPreview.src = settings.companyLogoBase64;
+                companyLogoPreview.style.display = 'block';
+            } else {
+                companyLogoPreview.src = '';
+                companyLogoPreview.style.display = 'none';
+            }
+            // Limpiar el input file por seguridad y consistencia visual (no muestra el archivo cargado)
+            document.getElementById('companyLogoFile').value = '';
+        }
+
+        function saveSettings() {
+            // Actualizar el objeto settings con los valores actuales del formulario
+            settings.companyName = document.getElementById('companyName').value.trim();
+            settings.companyAddress = document.getElementById('companyAddress').value.trim();
+            settings.companyPhone = document.getElementById('companyPhone').value.trim();
+            settings.companyEmail = document.getElementById('companyEmail').value.trim();
+            settings.companyNIT = document.getElementById('companyNIT').value.trim();
+            // companyLogoBase64 ya se actualiza en previewLogo() o clearLogo()
+            localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+            showAlert('Ajustes guardados exitosamente.', 'success');
+            // Re-render the PDF template elements if any settings affect them (e.g., company name, logo)
+            updatePdfHeaderInfo();
+        }
+
+        function previewLogo(event) {
+            const file = event.target.files[0];
+            const companyLogoPreview = document.getElementById('companyLogoPreview');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    companyLogoPreview.src = e.target.result;
+                    companyLogoPreview.style.display = 'block';
+                    settings.companyLogoBase64 = e.target.result; // Guardar en Base64
+                };
+                reader.readAsDataURL(file);
+            } else {
+                companyLogoPreview.src = '';
+                companyLogoPreview.style.display = 'none';
+                delete settings.companyLogoBase64;
+            }
+        }
+
+        function clearLogo() {
+            const companyLogoPreview = document.getElementById('companyLogoPreview');
+            companyLogoPreview.src = '';
+            companyLogoPreview.style.display = 'none';
+            document.getElementById('companyLogoFile').value = ''; // Clear file input
+            delete settings.companyLogoBase64;
+            localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings)); // Save updated settings
+            showAlert('Logo limpiado correctamente.', 'info');
+            updatePdfHeaderInfo(); // Update PDF header in case it was showing the logo
+        }
+
+        // Función para cambiar de sección
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            // Actualizar clase activa en la navegación
+            document.querySelectorAll('.sidebar ul li a').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`.sidebar ul li a[onclick*="${sectionId}"]`).classList.add('active');
+
+            if (sectionId === 'manageInvoicesSection') {
+                renderInvoices();
+            }
+            if (sectionId === 'createInvoiceSection') {
+                // If navigating to create invoice section, ensure the form is clean if not editing
+                if (!currentEditingInvoiceId) {
+                    resetForm();
+                }
+            }
+        }
+
+        // Función para añadir un nuevo ítem a la factura
+        function addItem(item = {}) {
+            const itemsContainer = document.getElementById('itemsContainer');
+            const itemRow = document.createElement('div');
+            itemRow.classList.add('item-row');
+            itemRow.innerHTML = `
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <input type="text" class="item-descripcion" value="${item.descripcion || ''}" placeholder="Descripción del servicio/producto..." oninput="calculateTotal()" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción Adicional:</label>
+                    <input type="text" class="item-descripcion-adicional" value="${item.descripcionAdicional || ''}" placeholder="Ej: Tamaño, Color, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Cantidad:</label>
+                    <input type="number" class="item-cantidad" value="${item.cantidad || 1}" min="1" oninput="calculateItemTotal(this)" required>
+                </div>
+                <div class="form-group">
+                    <label>Precio Unitario:</label>
+                    <input type="number" class="item-precio-unitario" value="${item.precioUnitario || 0}" min="0" step="0.01" oninput="calculateItemTotal(this)" required>
+                </div>
+                <div class="form-group">
+                    <label>Total Ítem:</label>
+                    <span class="item-total-item">$${(item.totalItem || 0).toFixed(2)}</span>
+                </div>
+                <button type="button" class="remove-item-btn" onclick="removeItem(this)"><i class="fas fa-trash"></i></button>
+            `;
+            itemsContainer.appendChild(itemRow);
+            calculateItemTotal(itemRow.querySelector('.item-cantidad')); // Calculate for new item
+        }
+
+        // Función para eliminar un ítem
+        function removeItem(button) {
+            button.closest('.item-row').remove();
+            calculateTotal();
+        }
+
+        // Calcula el total de un ítem individual
+        function calculateItemTotal(inputElement) {
+            const itemRow = inputElement.closest('.item-row');
+            const cantidad = parseFloat(itemRow.querySelector('.item-cantidad').value) || 0;
+            const precioUnitario = parseFloat(itemRow.querySelector('.item-precio-unitario').value) || 0;
+            const totalItem = cantidad * precioUnitario;
+            itemRow.querySelector('.item-total-item').textContent = formatCurrency(totalItem);
+            calculateTotal();
+        }
+
+        // Calcula el subtotal, impuesto, descuento y total general
+        function calculateTotal() {
+            let subtotal = 0;
+            document.querySelectorAll('#itemsContainer .item-row').forEach(row => {
+                const cantidad = parseFloat(row.querySelector('.item-cantidad').value) || 0;
+                const precioUnitario = parseFloat(row.querySelector('.item-precio-unitario').value) || 0;
+                subtotal += (cantidad * precioUnitario);
+            });
+
+            const impuestoPct = parseFloat(document.getElementById('impuesto').value) || 0;
+            const descuento = parseFloat(document.getElementById('descuento').value) || 0;
+
+            const impuestoVal = subtotal * (impuestoPct / 100);
+            let total = subtotal + impuestoVal - descuento;
+
+            if (total < 0) total = 0; // Ensure total doesn't go negative
+
+            document.getElementById('subtotalDisplay').textContent = formatCurrency(subtotal);
+            document.getElementById('totalDisplay').textContent = formatCurrency(total);
+        }
+
+        // Formato de moneda
+        function formatCurrency(value) {
+            return `$${value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+        }
+
+        // Generar número de factura basado en el tipo de documento
+        function generateInvoiceNumber() {
+            const tipoDocumento = document.getElementById('tipoDocumento').value;
+            let lastNumbers = JSON.parse(localStorage.getItem(LAST_NUMBER_KEY) || '{}');
+            const currentYear = new Date().getFullYear();
+
+            // Initialize year if not exists
+            if (!lastNumbers[currentYear]) {
+                lastNumbers[currentYear] = {
+                    'Factura de Servicio / Venta': 0,
+                    'Cotización': 0,
+                    'Orden de Servicio': 0
+                };
+            }
+
+            // Get the last number for the current document type and year
+            let lastNumber = lastNumbers[currentYear][tipoDocumento] || 0;
+            lastNumber++; // Increment for the new document
+
+            let prefix = '';
+            if (tipoDocumento === 'Factura de Servicio / Venta') {
+                prefix = 'FV';
+            } else if (tipoDocumento === 'Cotización') {
+                prefix = 'COT';
+            } else if (tipoDocumento === 'Orden de Servicio') {
+                prefix = 'OS';
+            }
+
+            const newNumber = `${prefix}-${currentYear.toString().slice(-2)}-${String(lastNumber).padStart(4, '0')}`;
+            document.getElementById('numeroFactura').value = newNumber;
+
+            // Store the incremented number (but only save when the invoice is actually saved)
+            // This ensures number is only consumed when the document is finalized.
+            // For now, it's just for display. Actual save happens in saveInvoice().
+        }
+
+        // Guardar factura
+        document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate required fields visually
+            const requiredInputs = document.querySelectorAll('#invoiceForm [required]');
+            let allFieldsFilled = true;
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = 'red';
+                    allFieldsFilled = false;
+                } else {
+                    input.style.borderColor = ''; // Reset border
+                }
+            });
+
+            // Check if there's at least one item
+            const items = document.querySelectorAll('#itemsContainer .item-row');
+            if (items.length === 0) {
+                showAlert('Debes añadir al menos un ítem a la factura.', 'warning');
+                allFieldsFilled = false;
+            }
+
+            if (!allFieldsFilled) {
+                showAlert('Por favor, completa todos los campos requeridos y añade al menos un ítem.', 'error');
+                return;
+            }
+
+            const invoiceData = {
+                id: document.getElementById('invoiceId').value || `inv_${Date.now()}`,
+                tipoDocumento: document.getElementById('tipoDocumento').value,
+                fechaFactura: document.getElementById('fechaFactura').value,
+                numeroFactura: document.getElementById('numeroFactura').value,
+                clienteNombre: document.getElementById('clienteNombre').value,
+                clienteDireccion: document.getElementById('clienteDireccion').value,
+                clienteNIT: document.getElementById('clienteNIT').value,
+                solicitante: document.getElementById('solicitante').value,
+                correo: document.getElementById('correo').value,
+                telefono: document.getElementById('telefono').value,
+                subtotal: parseFloat(document.getElementById('subtotalDisplay').textContent.replace('$', '').replace(',', '')),
+                impuestoPct: parseFloat(document.getElementById('impuesto').value),
+                descuentoVal: parseFloat(document.getElementById('descuento').value),
+                total: parseFloat(document.getElementById('totalDisplay').textContent.replace('$', '').replace(',', '')),
+                notas: document.getElementById('notas').value,
+                status: 'realizado', // Default status for new invoices
+                items: []
+            };
+
+            document.querySelectorAll('#itemsContainer .item-row').forEach(row => {
+                invoiceData.items.push({
+                    descripcion: row.querySelector('.item-descripcion').value,
+                    descripcionAdicional: row.querySelector('.item-descripcion-adicional').value,
+                    cantidad: parseInt(row.querySelector('.item-cantidad').value),
+                    precioUnitario: parseFloat(row.querySelector('.item-precio-unitario').value),
+                    totalItem: parseFloat(row.querySelector('.item-total-item').textContent.replace('$', '').replace(',', ''))
+                });
+            });
+
+            if (currentEditingInvoiceId) {
+                // Update existing invoice
+                const index = invoices.findIndex(inv => inv.id === currentEditingInvoiceId);
+                if (index !== -1) {
+                    invoices[index] = invoiceData;
+                    showAlert('Factura actualizada exitosamente.', 'success');
+                }
+                currentEditingInvoiceId = null; // Exit editing mode
+            } else {
+                // Add new invoice
+                invoices.push(invoiceData);
+                showAlert('Factura guardada exitosamente.', 'success');
+                // Only increment document number if it's a new invoice being saved
+                let lastNumbers = JSON.parse(localStorage.getItem(LAST_NUMBER_KEY) || '{}');
+                const currentYear = new Date().getFullYear();
+                if (!lastNumbers[currentYear]) lastNumbers[currentYear] = {};
+                lastNumbers[currentYear][invoiceData.tipoDocumento] = (lastNumbers[currentYear][invoiceData.tipoDocumento] || 0) + 1;
+                localStorage.setItem(LAST_NUMBER_KEY, JSON.stringify(lastNumbers));
+            }
+
+            saveData();
+            resetForm();
+            showSection('manageInvoicesSection'); // Go to manage invoices after saving
+        });
+
+        // Restablecer formulario
+        function resetForm() {
+            document.getElementById('invoiceForm').reset();
+            document.getElementById('invoiceId').value = '';
+            document.getElementById('itemsContainer').innerHTML = '';
+            addItem(); // Add one empty item by default
+            calculateTotal();
+            generateInvoiceNumber(); // Regenerate for the next new invoice
+            currentEditingInvoiceId = null; // Clear editing state
+            document.getElementById('invoiceForm').querySelectorAll('[required]').forEach(input => {
+                input.style.borderColor = ''; // Reset border colors
+            });
+        }
+
+        // Renderizar facturas en la tabla de gestión
+        function renderInvoices() {
+            const invoicesTableBody = document.getElementById('invoicesTableBody');
+            invoicesTableBody.innerHTML = '';
+            if (invoices.length === 0) {
+                invoicesTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay facturas guardadas.</td></tr>';
+                return;
+            }
+
+            // Sort invoices by date, newest first
+            const sortedInvoices = [...invoices].sort((a, b) => new Date(b.fechaFactura) - new Date(a.fechaFactura));
+
+            sortedInvoices.forEach(invoice => {
+                const row = invoicesTableBody.insertRow();
+                const statusClass = invoice.status.toLowerCase().replace(' ', ''); // For CSS class
+                row.innerHTML = `
+                    <td>${invoice.numeroFactura}</td>
+                    <td>${invoice.clienteNombre}</td>
+                    <td>${invoice.fechaFactura}</td>
+                    <td>${formatCurrency(invoice.total)}</td>
+                    <td><span class="status ${statusClass}">${invoice.status}</span></td>
+                    <td class="actions">
+                        <button class="btn btn-primary" onclick="editInvoice('${invoice.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="confirmDeleteInvoice('${invoice.id}')"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-success" onclick="generatePdfForExistingInvoice('${invoice.id}')"><i class="fas fa-file-pdf"></i></button>
+                    </td>
+                `;
+            });
+            updateSummary();
+        }
+
+        // Filter invoices based on search input
+        function filterInvoices() {
+            const searchTerm = document.getElementById('searchInvoice').value.toLowerCase();
+            const invoicesTableBody = document.getElementById('invoicesTableBody');
+            invoicesTableBody.innerHTML = ''; // Clear current table
+
+            const filteredInvoices = invoices.filter(invoice =>
+                invoice.clienteNombre.toLowerCase().includes(searchTerm) ||
+                invoice.numeroFactura.toLowerCase().includes(searchTerm) ||
+                invoice.tipoDocumento.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredInvoices.length === 0) {
+                invoicesTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No se encontraron facturas.</td></tr>';
+                return;
+            }
+
+            filteredInvoices.forEach(invoice => {
+                const row = invoicesTableBody.insertRow();
+                const statusClass = invoice.status.toLowerCase().replace(' ', '');
+                row.innerHTML = `
+                    <td>${invoice.numeroFactura}</td>
+                    <td>${invoice.clienteNombre}</td>
+                    <td>${invoice.fechaFactura}</td>
+                    <td>${formatCurrency(invoice.total)}</td>
+                    <td><span class="status ${statusClass}">${invoice.status}</span></td>
+                    <td class="actions">
+                        <button class="btn btn-primary" onclick="editInvoice('${invoice.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="confirmDeleteInvoice('${invoice.id}')"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-success" onclick="generatePdfForExistingInvoice('${invoice.id}')"><i class="fas fa-file-pdf"></i></button>
+                    </td>
+                `;
+            });
+        }
+
+
+        // Editar factura
+        function editInvoice(id) {
+            const invoice = invoices.find(inv => inv.id === id);
+            if (invoice) {
+                currentEditingInvoiceId = id; // Set editing mode
+                showSection('createInvoiceSection'); // Go to create invoice section
+
+                document.getElementById('invoiceId').value = invoice.id;
+                document.getElementById('tipoDocumento').value = invoice.tipoDocumento;
+                document.getElementById('fechaFactura').value = invoice.fechaFactura;
+                document.getElementById('numeroFactura').value = invoice.numeroFactura;
+                document.getElementById('clienteNombre').value = invoice.clienteNombre;
+                document.getElementById('clienteDireccion').value = invoice.clienteDireccion;
+                document.getElementById('clienteNIT').value = invoice.clienteNIT;
+                document.getElementById('solicitante').value = invoice.solicitante;
+                document.getElementById('correo').value = invoice.correo;
+                document.getElementById('telefono').value = invoice.telefono;
+                document.getElementById('impuesto').value = invoice.impuestoPct;
+                document.getElementById('descuento').value = invoice.descuentoVal;
+                document.getElementById('notas').value = invoice.notas;
+
+                const itemsContainer = document.getElementById('itemsContainer');
+                itemsContainer.innerHTML = ''; // Clear existing items
+                invoice.items.forEach(item => addItem(item)); // Add items from loaded invoice
+
+                calculateTotal(); // Recalculate totals
+            }
+        }
+
+        // Confirmar y eliminar factura
+        function confirmDeleteInvoice(id) {
+            showConfirm('¿Estás seguro de que quieres eliminar esta factura?', () => {
+                deleteInvoice(id);
+            });
+        }
+
+        function deleteInvoice(id) {
+            invoices = invoices.filter(invoice => invoice.id !== id);
+            saveData();
+            renderInvoices();
+            showAlert('Factura eliminada exitosamente.', 'success');
+        }
+
+        // Actualizar resumen en el home
+        function updateSummary() {
+            document.getElementById('totalInvoices').textContent = invoices.length;
+
+            let totalEarnings = 0;
+            const currentYear = new Date().getFullYear();
+            let invoicesThisYear = 0;
+
+            invoices.forEach(invoice => {
+                totalEarnings += invoice.total;
+                const invoiceYear = new Date(invoice.fechaFactura).getFullYear();
+                if (invoiceYear === currentYear) {
+                    invoicesThisYear++;
+                }
+            });
+
+            document.getElementById('totalEarnings').textContent = formatCurrency(totalEarnings);
+            document.getElementById('invoicesThisYear').textContent = invoicesThisYear;
+
+            // Update latest invoices table
+            const latestInvoicesTableBody = document.getElementById('latestInvoicesTableBody');
+            latestInvoicesTableBody.innerHTML = '';
+            if (invoices.length === 0) {
+                latestInvoicesTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay facturas recientes.</td></tr>';
+                return;
+            }
+
+            // Get up to 5 latest invoices
+            const latestInvoices = [...invoices].sort((a, b) => new Date(b.fechaFactura) - new Date(a.fechaFactura)).slice(0, 5);
+
+            latestInvoices.forEach(invoice => {
+                const row = latestInvoicesTableBody.insertRow();
+                const statusClass = invoice.status.toLowerCase().replace(' ', '');
+                row.innerHTML = `
+                    <td>${invoice.numeroFactura}</td>
+                    <td>${invoice.clienteNombre}</td>
+                    <td>${invoice.fechaFactura}</td>
+                    <td>${formatCurrency(invoice.total)}</td>
+                    <td><span class="status ${statusClass}">${invoice.status}</span></td>
+                `;
+            });
+        }
+
+        // Función para generar PDF desde una factura existente (botón en "Gestionar Facturas")
+        function generatePdfForExistingInvoice(id) {
+            const invoice = invoices.find(inv => inv.id === id);
+            if (invoice) {
+                // Populate the create invoice form with the data of the existing invoice
+                // This is a temporary step to use the existing generatePdf logic
+                document.getElementById('invoiceId').value = invoice.id;
+                document.getElementById('tipoDocumento').value = invoice.tipoDocumento;
+                document.getElementById('fechaFactura').value = invoice.fechaFactura;
+                document.getElementById('numeroFactura').value = invoice.numeroFactura;
+                document.getElementById('clienteNombre').value = invoice.clienteNombre;
+                document.getElementById('clienteDireccion').value = invoice.clienteDireccion;
+                document.getElementById('clienteNIT').value = invoice.clienteNIT;
+                document.getElementById('solicitante').value = invoice.solicitante;
+                document.getElementById('correo').value = invoice.correo;
+                document.getElementById('telefono').value = invoice.telefono;
+                document.getElementById('impuesto').value = invoice.impuestoPct;
+                document.getElementById('descuento').value = invoice.descuentoVal;
+                document.getElementById('notas').value = invoice.notas;
+
+                const itemsContainer = document.getElementById('itemsContainer');
+                itemsContainer.innerHTML = ''; // Clear existing items
+                invoice.items.forEach(item => addItem(item)); // Add items from the existing invoice
+
+                calculateTotal(); // Ensure totals are updated in the form for PDF generation
+
+                // Now call the main generatePdf function
+                generatePdf();
+
+                // Optionally, reset the form after PDF generation if you don't want to leave it populated
+                // resetForm(); // Consider if this is desired behavior after generating PDF from manage section
+            } else {
+                showAlert('Factura no encontrada para generar el PDF.', 'error');
+            }
+        }
+
+        // Actualizar la información de la empresa en el encabezado del PDF
+        function updatePdfHeaderInfo() {
+            document.getElementById('pdfHeaderCompanyName').textContent = settings.companyName || 'Nombre de tu Empresa';
+            document.getElementById('pdfCompanyName').textContent = settings.companyName || 'Nombre de tu Empresa'; // Also for "Emitido por"
+            document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress || 'Dirección de tu Empresa';
+            document.getElementById('pdfCompanyPhone').textContent = `Teléfono: ${settings.companyPhone || '(XXX) XXX-XXXX'}`;
+            document.getElementById('pdfCompanyEmail').textContent = `Email: ${settings.companyEmail || 'tu_correo@empresa.com'}`;
+            document.getElementById('pdfCompanyNIT').textContent = `NIT: ${settings.companyNIT || 'XXX.XXX.XXX-X'}`;
+            
+            const pdfCompanyLogo = document.getElementById('pdfCompanyLogo');
+            if (settings.companyLogoBase64) {
+                pdfCompanyLogo.src = settings.companyLogoBase64;
+                pdfCompanyLogo.style.display = 'block';
+            } else {
+                // Set a default logo if none is uploaded or if cleared
+                pdfCompanyLogo.src = 'LogoCompleto.png'; // Fallback to default image
+                pdfCompanyLogo.style.display = 'block';
+            }
+        }
+
+
+        // Función principal para generar el PDF
+        function generatePdf() {
+            const { jsPDF } = window.jspdf;
+            const pdfTemplate = document.querySelector('.pdf-template');
+
+            // 1. Recopilar datos del formulario (ya se hace con la función generatePdfForExistingInvoice o directamente desde el formulario de creación)
+            const invoiceData = {
+                id: document.getElementById('invoiceId').value,
+                tipoDocumento: document.getElementById('tipoDocumento').value,
+                fechaFactura: document.getElementById('fechaFactura').value,
+                numeroFactura: document.getElementById('numeroFactura').value,
+                clienteNombre: document.getElementById('clienteNombre').value,
+                clienteDireccion: document.getElementById('clienteDireccion').value,
+                clienteNIT: document.getElementById('clienteNIT').value,
+                solicitante: document.getElementById('solicitante').value,
+                correo: document.getElementById('correo').value,
+                telefono: document.getElementById('telefono').value,
+                subtotal: parseFloat(document.getElementById('subtotalDisplay').textContent.replace('$', '').replace(',', '')),
+                impuestoPct: parseFloat(document.getElementById('impuesto').value),
+                descuentoVal: parseFloat(document.getElementById('descuento').value),
+                total: parseFloat(document.getElementById('totalDisplay').textContent.replace('$', '').replace(',', '')),
+                notas: document.getElementById('notas').value,
+                items: []
+            };
+
+            document.querySelectorAll('#itemsContainer .item-row').forEach(row => {
+                invoiceData.items.push({
+                    descripcion: row.querySelector('.item-descripcion').value,
+                    descripcionAdicional: row.querySelector('.item-descripcion-adicional').value,
+                    cantidad: parseInt(row.querySelector('.item-cantidad').value),
+                    precioUnitario: parseFloat(row.querySelector('.item-precio-unitario').value),
+                    totalItem: parseFloat(row.querySelector('.item-total-item').textContent.replace('$', '').replace(',', ''))
+                });
+            });
+
+            // 2. Poblar campos de la plantilla PDF (el elemento oculto que html2canvas usará)
+            document.getElementById('pdfClienteNombre').textContent = invoiceData.clienteNombre;
+            document.getElementById('pdfClienteDireccion').textContent = invoiceData.clienteDireccion;
+            document.getElementById('pdfClienteNIT').textContent = invoiceData.clienteNIT;
+            document.getElementById('pdfSolicitante').textContent = invoiceData.solicitante;
+            document.getElementById('pdfCorreo').textContent = invoiceData.correo;
+            document.getElementById('pdfTelefono').textContent = invoiceData.telefono;
+            document.getElementById('pdfTipoDocumento').textContent = invoiceData.tipoDocumento;
+            document.getElementById('pdfTipoDocumentoFooter').textContent = invoiceData.tipoDocumento.toLowerCase();
+            document.getElementById('pdfNumeroFactura').textContent = invoiceData.numeroFactura;
+            document.getElementById('pdfFechaFactura').textContent = invoiceData.fechaFactura;
+            document.getElementById('pdfSubtotal').textContent = formatCurrency(invoiceData.subtotal);
+            document.getElementById('pdfImpuestoPct').textContent = invoiceData.impuestoPct;
+            document.getElementById('pdfImpuestoVal').textContent = formatCurrency(invoiceData.subtotal * (invoiceData.impuestoPct / 100));
+            document.getElementById('pdfDescuentoVal').textContent = formatCurrency(invoiceData.descuentoVal);
+            document.getElementById('pdfTotal').textContent = formatCurrency(invoiceData.total);
+            document.getElementById('pdfNotas').textContent = invoiceData.notas;
+
+            const pdfItemsTableBody = document.getElementById('pdfItemsTableBody');
+            pdfItemsTableBody.innerHTML = ''; // Limpiar ítems previos
+            invoiceData.items.forEach(item => {
+                const row = pdfItemsTableBody.insertRow();
+                row.innerHTML = `
+                    <td>${item.descripcion}</td>
+                    <td>${item.descripcionAdicional}</td>
+                    <td class="text-right">${item.cantidad}</td>
+                    <td class="text-right">${formatCurrency(item.precioUnitario)}</td>
+                    <td class="text-right">${formatCurrency(item.totalItem)}</td>
+                `;
+            });
+
+            // Asegurarse de que la información de la empresa esté actualizada en el encabezado del PDF
+            updatePdfHeaderInfo();
+
+            // Mostrar la plantilla PDF temporalmente para que html2canvas pueda renderizarla
+            pdfTemplate.style.display = 'block';
+            document.body.classList.add('pdf-generating'); // Clase opcional si se necesita ocultar otros elementos del body durante la generación
+
+            html2canvas(pdfTemplate, {
+                scale: 2, // Usar una escala mayor para mejor calidad del PDF
+                useCORS: true, // Necesario si cargas imágenes de otros dominios (ej. logo)
+                allowTaint: true, // Permite "tainting" el canvas para imágenes de origen cruzado (menos seguro pero a menudo necesario)
+                logging: false // Deshabilita el logging de html2canvas para una consola más limpia
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // Ancho A4 en mm
+                const pageHeight = 297; // Alto A4 en mm
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+
+                const doc = new jsPDF('p', 'mm', 'a4'); // Inicializa jsPDF en orientación vertical, mm, tamaño A4
+                let position = 0;
+
+                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                // Ocultar la plantilla PDF después de la generación
+                pdfTemplate.style.display = 'none';
+                document.body.classList.remove('pdf-generating');
+
+                // Generar nombre de archivo basado en los datos de la factura
+                const tipoDoc = invoiceData.tipoDocumento.replace(/\s*\/\s*/g, '_').replace(/\s/g, '');
+                const numDoc = invoiceData.numeroFactura;
+                const cliente = invoiceData.clienteNombre.replace(/[^a-zA-Z0-9]/g, '_'); // Limpiar caracteres especiales
+                const fileName = `${tipoDoc}_${numDoc}_${cliente}.pdf`;
+
+                // *** ESTA ES LA LÍNEA CLAVE PARA LA DESCARGA DIRECTA ***
+                doc.save(fileName); // Descarga el PDF con el nombre asignado
+
+                showAlert('PDF generado exitosamente y descargado.', 'success');
+
+            }).catch(error => {
+                console.error('Error al generar el PDF:', error);
+                showAlert('Error al generar el PDF. Por favor, inténtalo de nuevo.', 'error');
+                // Asegurarse de que la plantilla se oculte incluso si hay un error
+                pdfTemplate.style.display = 'none';
+                document.body.classList.remove('pdf-generating');
+            });
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            showSection('homeSection'); // Mostrar la sección de inicio por defecto
+            addItem(); // Añadir un ítem vacío al iniciar la sección de crear factura
+            updateSummary(); // Actualizar el resumen en el home
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            document.getElementById('pdfCurrentYear').textContent = new Date().getFullYear();
+            updatePdfHeaderInfo(); // Initialize PDF header info on load
+        });
+
+    </script>
+</body>
+</html>
