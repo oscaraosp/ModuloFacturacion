@@ -29,7 +29,7 @@
             background-color: var(--background-light);
             color: var(--text-color);
             display: flex;
-            min-height: 100vh;
+            min-height: 10vh;
             flex-direction: column;
         }
 
@@ -403,7 +403,24 @@
             padding: 8px 12px;
             font-size: 0.9em;
             border-radius: 6px;
+            margin-bottom: 5px; /* Added for better stacking on small screens */
         }
+        /* Specific button styles for actions column */
+        .btn-info { /* Used for Edit */
+            background-color: #17A2B8;
+            color: white;
+        }
+        .btn-info:hover {
+            background-color: #138496;
+        }
+        .btn-warning { /* Used for Duplicate */
+            background-color: #FFC107;
+            color: #212529; /* Darker text for warning background */
+        }
+        .btn-warning:hover {
+            background-color: #E0A800;
+        }
+
 
         /* Status styling */
         .status {
@@ -888,6 +905,18 @@
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
+
+            .invoice-table .actions {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center; /* Center buttons */
+            }
+
+            .invoice-table .actions button {
+                flex: 1 1 auto; /* Allow buttons to grow and wrap */
+                margin: 5px; /* Adjust margin for spacing */
+            }
+
 
             .item-row {
                 grid-template-columns: 1fr;
@@ -1595,7 +1624,7 @@
         }
 
         // Generar número de factura basado en el tipo de documento
-        function generateInvoiceNumber() {
+        function generateInvoiceNumber(forDuplicate = false) {
             const tipoDocumento = document.getElementById('tipoDocumento').value;
             let lastNumbers = JSON.parse(localStorage.getItem(LAST_NUMBER_KEY)) || {};
             let currentYear = new Date().getFullYear();
@@ -1608,23 +1637,26 @@
                 default: prefix = 'DOC';
             }
 
+            // Si estamos editando y NO es un duplicado, mantenemos el número actual
+            if (currentEditingInvoiceId && !forDuplicate) {
+                const existingInvoice = invoices.find(inv => inv.id === currentEditingInvoiceId);
+                if (existingInvoice && existingInvoice.numeroFactura) {
+                    // Solo actualiza el input si el prefijo es el mismo, para evitar sobrescribir con un número de otro tipo
+                    if (existingInvoice.numeroFactura.startsWith(prefix)) {
+                        document.getElementById('numeroFactura').value = existingInvoice.numeroFactura;
+                        return; // Salir sin generar un nuevo número
+                    }
+                }
+            }
+            
+            // Lógica para generar un nuevo número o incrementar si no estamos en modo edición o es un duplicado
             if (!lastNumbers[currentYear]) {
                 lastNumbers[currentYear] = {};
             }
             if (!lastNumbers[currentYear][prefix]) {
                 lastNumbers[currentYear][prefix] = 0;
             }
-
-            // Si estamos editando y el número ya existe, no lo incrementamos
-            if (currentEditingInvoiceId) {
-                const existingInvoice = invoices.find(inv => inv.id === currentEditingInvoiceId);
-                if (existingInvoice && existingInvoice.numeroFactura.startsWith(prefix)) {
-                    document.getElementById('numeroFactura').value = existingInvoice.numeroFactura;
-                    return;
-                }
-            }
             
-            // Incrementamos y guardamos el nuevo número
             lastNumbers[currentYear][prefix]++;
             localStorage.setItem(LAST_NUMBER_KEY, JSON.stringify(lastNumbers));
             
@@ -1754,7 +1786,8 @@
                     </td>
                     <td class="actions">
                         <button class="btn btn-info btn-sm" onclick="editInvoice(${invoice.id})"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="btn btn-danger btn-sm" onclick="confirmDeleteInvoice(${invoice.id})"><i class="fas fa-trash"></i> Eliminar</button>
+                        <button class="btn btn-warning btn-sm" onclick="duplicateInvoice(${invoice.id})"><i class="fas fa-copy"></i> Duplicar</button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDeleteInvoice(${invoice.id})"><i class="fas fa-trash"></i> Elimera</button>
                         <button class="btn btn-success btn-sm" onclick="generatePdf(${invoice.id})"><i class="fas fa-file-pdf"></i> PDF</button>
                     </td>
                 `;
@@ -1832,6 +1865,51 @@
                 showAlert(`Estado de factura ${invoices[invoiceIndex].numeroFactura} cambiado a "${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}".`, 'success');
             } else {
                 showAlert('Error: No se encontró la factura para actualizar el estado.', 'error');
+            }
+        }
+
+        // Duplicar factura
+        function duplicateInvoice(id) {
+            const originalInvoice = invoices.find(inv => inv.id === id);
+            if (originalInvoice) {
+                // Crear una copia profunda del objeto para no modificar el original
+                const duplicatedInvoice = JSON.parse(JSON.stringify(originalInvoice));
+
+                duplicatedInvoice.id = Date.now(); // Nuevo ID único
+                duplicatedInvoice.fechaFactura = new Date().toISOString().slice(0, 10); // Fecha actual
+                duplicatedInvoice.estado = 'pendiente'; // Estado inicial para el duplicado
+                duplicatedInvoice.imagenes = []; // Las imágenes suelen ser específicas del trabajo original, se reinician
+
+                // Generar un nuevo número de documento para el duplicado
+                const tipoDocumentoOriginal = duplicatedInvoice.tipoDocumento;
+                let lastNumbers = JSON.parse(localStorage.getItem(LAST_NUMBER_KEY)) || {};
+                let currentYear = new Date().getFullYear();
+                let prefix = '';
+
+                switch (tipoDocumentoOriginal) {
+                    case 'Factura de Servicio / Venta': prefix = 'FSV'; break;
+                    case 'Cotización': prefix = 'COT'; break;
+                    case 'Orden de Servicio': prefix = 'OS'; break;
+                    default: prefix = 'DOC';
+                }
+
+                if (!lastNumbers[currentYear]) {
+                    lastNumbers[currentYear] = {};
+                }
+                if (!lastNumbers[currentYear][prefix]) {
+                    lastNumbers[currentYear][prefix] = 0;
+                }
+                lastNumbers[currentYear][prefix]++;
+                localStorage.setItem(LAST_NUMBER_KEY, JSON.stringify(lastNumbers));
+                const nextNumber = lastNumbers[currentYear][prefix].toString().padStart(4, '0');
+                duplicatedInvoice.numeroFactura = `${prefix}-${currentYear}-${nextNumber}`;
+
+                invoices.push(duplicatedInvoice);
+                saveData();
+                renderInvoices();
+                showAlert(`Documento ${originalInvoice.numeroFactura} duplicado como ${duplicatedInvoice.numeroFactura}.`, 'success');
+            } else {
+                showAlert('Error: No se encontró el documento para duplicar.', 'error');
             }
         }
 
@@ -1917,7 +1995,7 @@
 
             // Llenar el template del PDF con los datos de la factura
             document.getElementById('pdfHeaderCompanyName').textContent = settings.companyName || 'OSCAR OSPINO | CRIOSER SOLUTIONS';
-            document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress || 'Dirección de la Empresa';
+            document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress || 'Dirección de tu Empresa';
             document.getElementById('pdfCompanyPhone').textContent = `Teléfono: ${settings.companyPhone || '(XXX) XXX-XXXX'}`;
             document.getElementById('pdfCompanyEmail').textContent = `Email: ${settings.companyEmail || 'tu_correo@empresa.com'}`;
             document.getElementById('pdfCompanyNIT').textContent = `NIT: ${settings.companyNIT || 'XXX.XXX.XXX-X'}`;
@@ -2016,6 +2094,7 @@
                 // Ocultar el template del PDF y mostrar la interfaz principal
                 pdfTemplate.style.display = 'none';
                 document.body.classList.remove('print-mode');
+                showAlert('PDF generado exitosamente.', 'success'); // Notificar éxito
             }).catch(error => {
                 showAlert('Error al generar el PDF: ' + error.message, 'error');
                 console.error("Error generating PDF:", error);
@@ -2070,7 +2149,7 @@
 
         // Actualizar la información de la empresa en el encabezado del PDF (cuando se guardan ajustes)
         function updatePdfHeaderInfo() {
-            document.getElementById('pdfHeaderCompanyName').textContent = settings.companyName || 'Nombre de tu Empresa';
+            document.getElementById('pdfHeaderCompanyName').textContent = settings.companyName || 'OSCAR OSPINO | CRIOSER SOLUTIONS';
             document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress || 'Dirección de tu Empresa';
             document.getElementById('pdfCompanyPhone').textContent = `Teléfono: ${settings.companyPhone || '(XXX) XXX-XXXX'}`;
             document.getElementById('pdfCompanyEmail').textContent = `Email: ${settings.companyEmail || 'tu_correo@empresa.com'}`;
