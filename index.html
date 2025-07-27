@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crioser Facturación Profesional</title>
+    <title>OSCAR OSPINO | CRIOSER SOLUTIONS Facturación Profesional</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -11,29 +11,32 @@
     <style>
         /* CSS general */
         :root {
-            --primary-blue: #00204d; /* Azul marino muy oscuro para que el logo resalte */
-            --light-blue: #007bff;   /* Azul para botones y acentos */
-            --accent-green: #28a745; /* Verde para éxito/añadir */
-            --text-color: #333;
-            --light-bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --border-color: #e0e0e0;
+            --primary-color: #00008B; /* Azul Rey */
+            --secondary-color: #87CEEB; /* Azul Lago */
+            --success-color: #00008B; /* Azul Rey for success/add */
+            --text-color: #333333; /* Dark Gray */
+            --background-light: #FFFFFF; /* Blanco */
+            --card-bg: #FFFFFF; /* Blanco */
+            --border-color: #D3D3D3; /* Light Gray */
+            --danger-color: #DC3545; /* Rojo */
+            --info-color: #6c757d; /* Gray */
+            --warning-color: #D4AF37; /* Gold-like for pending */
         }
 
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            background-color: var(--light-bg);
+            background-color: var(--background-light);
             color: var(--text-color);
             display: flex;
-            min-height: 100vh; /* Changed to 100vh to ensure footer is at bottom */
+            min-height: 100vh;
             flex-direction: column;
         }
 
         /* Barra de navegación lateral */
         .sidebar {
             width: 250px;
-            background-color: var(--primary-blue);
+            background-color: var(--primary-color);
             color: white;
             padding: 20px;
             box-sizing: border-box;
@@ -82,7 +85,7 @@
 
         .sidebar ul li a:hover,
         .sidebar ul li a.active {
-            background-color: var(--light-blue);
+            background-color: var(--secondary-color);
         }
 
         /* Contenido principal */
@@ -104,30 +107,10 @@
         }
 
         header h1 {
-            color: var(--primary-blue);
+            color: var(--primary-color);
             font-size: 2em;
             margin: 0;
         }
-
-        /* REMOVED user-info styles as requested */
-        /*
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .user-info span {
-            font-weight: 600;
-            color: var(--text-color);
-        }
-        */
 
         /* Secciones */
         .section {
@@ -144,9 +127,10 @@
         }
 
         h2 {
-            color: var(--light-blue);
+            color: var(--primary-color);
             margin-top: 0;
             margin-bottom: 25px;
+            font-size: 1.8em;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
         }
@@ -160,7 +144,7 @@
         }
 
         .summary-card {
-            background-color: var(--light-blue);
+            background-color: var(--primary-color);
             color: white;
             padding: 25px;
             border-radius: 10px;
@@ -171,9 +155,9 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        .summary-card.green { background-color: var(--accent-green); }
-        .summary-card.blue { background-color: #007bff; }
-        .summary-card.purple { background-color: #6f42c1; }
+        .summary-card.green { background-color: var(--success-color); }
+        .summary-card.blue { background-color: var(--primary-color); }
+        .summary-card.purple { background-color: var(--secondary-color); }
 
         .summary-card i {
             font-size: 3em;
@@ -214,15 +198,14 @@
             border-radius: 8px;
             font-size: 1em;
             box-sizing: border-box;
-            background-color: var(--light-bg);
+            background-color: var(--background-light);
             color: var(--text-color);
         }
         
         /* Estilo específico para input[type="file"] */
         input[type="file"] {
-            padding: 8px; /* Ajusta el padding para que no se vea como un input de texto normal */
+            padding: 8px;
         }
-
 
         textarea {
             resize: vertical;
@@ -234,14 +217,12 @@
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
-            background-color: var(--light-bg);
+            background-color: var(--background-light);
         }
 
         .item-row {
-            /* Adjusted grid template for new fields */
             display: grid;
-            /* Changed grid-template-columns: 2fr 1fr 1fr 1fr 1fr 50px; to accommodate "Descripción Adicional" instead of "Unidad" */
-            grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 50px; /* Desc, Desc.Adicional, Cant, P.Unitario, Total, Btn */
+            grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 50px;
             gap: 15px;
             align-items: center;
             margin-bottom: 15px;
@@ -267,11 +248,11 @@
         }
 
         .item-row input, .item-row select {
-            margin-bottom: 0; /* Anula el margin-bottom del form-group */
+            margin-bottom: 0;
         }
 
         .remove-item-btn {
-            background-color: #dc3545; /* Rojo para eliminar */
+            background-color: var(--danger-color);
             color: white;
             border: none;
             padding: 10px;
@@ -281,16 +262,16 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 40px; /* Ancho fijo para el botón */
-            height: 40px; /* Alto fijo para el botón */
+            width: 40px;
+            height: 40px;
         }
 
         .remove-item-btn:hover {
-            background-color: #c82333;
+            background-color: #c82333; /* Darker red */
         }
 
         .add-item-btn {
-            background-color: var(--accent-green);
+            background-color: var(--success-color);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -302,7 +283,7 @@
         }
 
         .add-item-btn:hover {
-            background-color: #218838;
+            background-color: #00005C; /* Darker Azul Rey */
         }
 
         .total-section {
@@ -311,7 +292,7 @@
             margin-top: 20px;
             font-size: 1.2em;
             font-weight: 700;
-            color: var(--primary-blue);
+            color: var(--primary-color);
         }
 
         .total-section label {
@@ -343,17 +324,17 @@
         }
 
         .btn-primary {
-            background-color: var(--light-blue);
+            background-color: var(--primary-color);
             color: white;
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
+            background-color: #00005C; /* Darker Azul Rey */
             transform: translateY(-2px);
         }
 
         .btn-secondary {
-            background-color: #6c757d;
+            background-color: var(--info-color);
             color: white;
         }
 
@@ -363,7 +344,7 @@
         }
 
         .btn-danger {
-            background-color: #dc3545;
+            background-color: var(--danger-color);
             color: white;
         }
 
@@ -373,18 +354,18 @@
         }
 
         .btn-success {
-            background-color: var(--accent-green);
+            background-color: var(--success-color);
             color: white;
         }
 
         .btn-success:hover {
-            background-color: #218838;
+            background-color: #00005C; /* Darker Azul Rey */
             transform: translateY(-2px);
         }
 
         /* Tabla de facturas */
         .invoice-table-container {
-            overflow-x: auto; /* Permite scroll horizontal en tablas grandes */
+            overflow-x: auto;
             margin-top: 20px;
         }
 
@@ -402,7 +383,7 @@
         }
 
         .invoice-table th {
-            background-color: var(--light-blue);
+            background-color: var(--primary-color);
             color: white;
             font-weight: 600;
             text-transform: uppercase;
@@ -410,7 +391,7 @@
         }
 
         .invoice-table tbody tr:nth-child(even) {
-            background-color: var(--light-bg);
+            background-color: var(--background-light);
         }
 
         .invoice-table tbody tr:hover {
@@ -431,16 +412,33 @@
             font-weight: 600;
             color: white;
             font-size: 0.8em;
+            display: inline-block; /* To allow padding/margin */
+            text-align: center;
         }
 
-        .status.pendiente { background-color: #ffc107; } /* Warning yellow */
-        .status.realizado { background-color: var(--accent-green); } /* Success green */
-        .status.enproceso { background-color: var(--light-blue); } /* Info blue */
+        .status.pendiente { background-color: var(--warning-color); color: #333; }
+        .status.realizado { background-color: var(--success-color); }
+        .status.enproceso { background-color: var(--info-color); }
+
+        /* Estilo para el select de estado en la tabla */
+        .status-select {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--background-light);
+            font-size: 0.9em;
+            cursor: pointer;
+            width: 100%; /* Ensure it takes full cell width */
+            box-sizing: border-box; /* Include padding/border in width */
+        }
+        .status-select.pendiente { border-color: var(--warning-color); }
+        .status-select.realizado { border-color: var(--success-color); }
+        .status-select.enproceso { border-color: var(--info-color); }
 
 
         /* Pie de página */
         footer {
-            margin-top: auto; /* Empuja el footer al final */
+            margin-top: auto;
             padding: 20px;
             text-align: center;
             color: #666;
@@ -451,42 +449,41 @@
 
         /* Template de PDF (oculto por defecto) */
         .pdf-template {
-            width: 612pt; /* Ancho de Carta en puntos */
-            /* height: 841.89pt; /* Alto de A4 en puntos */ /* Removed fixed height, let content define it for html2canvas */
-            padding: 40pt; /* Equivalente a 1cm de margen, 1pt = 1/72 pulgada */
+            width: 612pt;
+            padding: 40pt;
             box-sizing: border-box;
             background: white;
             font-family: 'Poppins', sans-serif;
             color: #333;
-            display: none; /* Oculto por defecto */
-            flex-direction: column; /* Para organizar el contenido verticalmente */
-            justify-content: space-between; /* Espacio entre header, content y footer */
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         /* Estilos del encabezado del PDF */
         .pdf-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start; /* Alinea arriba el logo e info */
+            align-items: flex-start;
             margin-bottom: 40pt;
             padding-bottom: 10pt;
-            border-bottom: 2pt solid var(--primary-blue); /* Línea divisoria */
+            border-bottom: 2pt solid var(--primary-color);
         }
 
         .pdf-header img {
-            max-width: 120pt; /* Tamaño del logo en el PDF */
+            max-width: 120pt;
             height: auto;
-            margin-left: 20pt; /* Space between logo and info, changed to left for right alignment */
+            margin-left: 20pt;
         }
 
         .pdf-header-info {
-            text-align: left; /* Changed to left */
+            text-align: left;
             font-size: 10pt;
             line-height: 1.4;
         }
 
         .pdf-header-info h1 {
-            color: var(--primary-blue);
+            color: var(--primary-color);
             font-size: 16pt;
             margin-bottom: 5pt;
         }
@@ -513,7 +510,7 @@
         }
 
         .pdf-invoice-details h3 {
-            color: var(--light-blue);
+            color: var(--primary-color);
             font-size: 12pt;
             margin-bottom: 10pt;
             border-bottom: 1pt solid #eee;
@@ -526,7 +523,7 @@
         }
 
         .pdf-invoice-details strong {
-            color: var(--primary-blue);
+            color: var(--primary-color);
         }
 
         /* Estilos de la tabla de ítems del PDF */
@@ -544,7 +541,7 @@
         }
 
         .pdf-items-table th {
-            background-color: var(--light-blue);
+            background-color: var(--primary-color);
             color: white;
             font-weight: 600;
             text-transform: uppercase;
@@ -564,7 +561,7 @@
             font-size: 11pt;
             font-weight: 700;
             margin-top: 20pt;
-            border-top: 2pt solid var(--primary-blue);
+            border-top: 2pt solid var(--primary-color);
             padding-top: 10pt;
         }
 
@@ -587,37 +584,44 @@
         .pdf-notes h4 {
             font-size: 10pt;
             margin-bottom: 5pt;
-            color: var(--primary-blue);
+            color: var(--primary-color);
         }
 
-        /* Estilos para las imágenes en el PDF */
-        .pdf-images-container {
+        /* Estilos para la sección de imágenes en el PDF */
+        .pdf-images-section {
             margin-top: 30pt;
-            margin-bottom: 30pt;
-            padding: 10pt;
-            border: 1pt solid #eee;
-            border-radius: 5pt;
-            background-color: #f9f9f9;
-            display: grid;
-            /* Adjusted grid-template-columns for smaller images */
-            grid-template-columns: repeat(auto-fit, minmax(60pt, 1fr)); /* Half of previous 120pt */
+            padding-top: 15pt;
+            border-top: 1pt solid #eee;
+        }
+
+        .pdf-images-section h4 {
+            font-size: 10pt;
+            margin-bottom: 15pt;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .pdf-images-container {
+            display: flex;
+            flex-wrap: wrap;
             gap: 10pt;
-            justify-content: center;
+            justify-content: center; /* Center images horizontally */
         }
 
         .pdf-images-container img {
-            max-width: 120pt; /* Half of previous max-width to make them smaller */
-            max-height: 120pt; /* Add max-height to ensure aspect ratio is maintained better within limits */
-            width: auto; /* Allow image to scale down */
+            max-width: 45%; /* Adjust based on desired layout, e.g., two images per row */
             height: auto;
             border: 1pt solid #ddd;
-            border-radius: 3pt;
+            padding: 5pt;
+            box-sizing: border-box;
+            max-height: 150pt; /* Limit height to prevent images from being too large */
             object-fit: contain; /* Ensure the image fits within the bounds without cropping */
         }
 
+
         /* Estilos del pie de página del PDF */
         .pdf-footer {
-            margin-top: auto; /* Empuja el footer al final de la página */
+            margin-top: auto;
             text-align: center;
             font-size: 8pt;
             color: #666;
@@ -686,7 +690,7 @@
         .custom-alert-box h3 {
             margin-top: 0;
             font-size: 1.5em;
-            color: var(--primary-blue);
+            color: var(--primary-color);
             margin-bottom: 15px;
         }
 
@@ -713,15 +717,15 @@
         }
 
         .custom-alert-box .alert-buttons .btn-ok {
-            background-color: var(--light-blue);
+            background-color: var(--primary-color);
             color: white;
         }
         .custom-alert-box .alert-buttons .btn-ok:hover {
-            background-color: #0056b3;
+            background-color: #00005C;
         }
 
         .custom-alert-box .alert-buttons .btn-cancel {
-            background-color: #6c757d;
+            background-color: var(--info-color);
             color: white;
         }
         .custom-alert-box .alert-buttons .btn-cancel:hover {
@@ -729,9 +733,9 @@
         }
 
         /* Colores para tipos de alerta */
-        .custom-alert-box.success h3 { color: var(--accent-green); }
-        .custom-alert-box.error h3 { color: #dc3545; }
-        .custom-alert-box.warning h3 { color: #ffc107; }
+        .custom-alert-box.success h3 { color: var(--success-color); }
+        .custom-alert-box.error h3 { color: var(--danger-color); }
+        .custom-alert-box.warning h3 { color: var(--warning-color); }
 
         /* Toast notifications (for simple alerts) */
         .toast-container {
@@ -740,12 +744,12 @@
             right: 20px;
             z-index: 10000;
             display: flex;
-            flex-direction: column-reverse; /* Newest toast at bottom */
+            flex-direction: column-reverse;
             gap: 10px;
         }
 
         .toast {
-            background-color: var(--primary-blue);
+            background-color: var(--primary-color);
             color: white;
             padding: 15px 20px;
             border-radius: 8px;
@@ -765,42 +769,94 @@
             transform: translateX(0);
         }
 
-        .toast.success { background-color: var(--accent-green); }
-        .toast.error { background-color: #dc3545; }
-        .toast.warning { background-color: #ffc107; color: #333; } /* Warning text color changed */
-        .toast.info { background-color: var(--light-blue); }
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--danger-color); }
+        .toast.warning { background-color: var(--warning-color); color: #333; }
+        .toast.info { background-color: var(--info-color); }
 
         .toast i {
             font-size: 1.2em;
         }
 
+        /* Image upload and preview styles */
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            border: 1px dashed var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .image-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview-item .remove-image-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(220, 53, 69, 0.8); /* Danger color with opacity */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background-color 0.2s;
+        }
+
+        .image-preview-item .remove-image-btn:hover {
+            background-color: var(--danger-color);
+        }
+
+
         /* MEDIA QUERIES FOR RESPONSIVE DESIGN */
 
         @media (max-width: 768px) {
-            /* Adjust sidebar behavior */
             .sidebar {
-                width: 100%; /* Take full width */
-                height: auto; /* Height adapts to content */
-                position: relative; /* Not fixed anymore */
+                width: 100%;
+                height: auto;
+                position: relative;
                 box-shadow: none;
                 padding: 10px;
             }
 
             .sidebar .logo {
-                width: 100px; /* Smaller logo */
+                width: 100px;
                 margin-bottom: 10px;
             }
 
             .sidebar ul {
-                flex-direction: row; /* Make menu horizontal */
+                flex-direction: row;
                 justify-content: space-around;
-                flex-wrap: wrap; /* Allow items to wrap */
+                flex-wrap: wrap;
                 font-size: 0.9em;
             }
 
             .sidebar ul li {
                 margin-bottom: 5px;
-                width: auto; /* Let items take natural width */
+                width: auto;
             }
 
             .sidebar ul li a {
@@ -812,67 +868,64 @@
                 font-size: 1em;
             }
 
-            /* Adjust main content */
             .main-content {
-                margin-left: 0; /* Remove fixed margin */
-                width: 100%; /* Take full width */
-                padding: 15px; /* Adjust padding */
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
             }
 
             header {
-                flex-direction: column; /* Stack header elements */
+                flex-direction: column;
                 align-items: flex-start;
                 margin-bottom: 20px;
             }
 
             header h1 {
-                font-size: 1.5em; /* Smaller font size */
+                font-size: 1.5em;
             }
 
-            /* Adjust summary cards */
             .summary-cards {
-                grid-template-columns: 1fr; /* Stack cards vertically */
+                grid-template-columns: 1fr;
                 gap: 15px;
             }
 
-            /* Adjust item rows for smaller screens */
             .item-row {
-                grid-template-columns: 1fr; /* Stack inputs vertically */
+                grid-template-columns: 1fr;
                 gap: 10px;
                 padding: 10px;
             }
 
-            .item-row .form-group:nth-child(2) input, /* Descripcion Adicional */
-            .item-row .form-group:nth-child(3) input, /* Cant */
-            .item-row .form-group:nth-child(4) input { /* P. Unitario */
-                width: 100%; /* Make inputs take full width */
+            .item-row .form-group:nth-child(2) input,
+            .item-row .form-group:nth-child(3) input,
+            .item-row .form-group:nth-child(4) input {
+                width: 100%;
             }
 
             .remove-item-btn {
-                width: 100%; /* Make button full width */
+                width: 100%;
                 height: auto;
                 padding: 10px;
             }
 
             .total-section {
-                flex-direction: column; /* Stack total labels and values */
+                flex-direction: column;
                 align-items: flex-end;
                 font-size: 1em;
             }
 
             .button-group {
-                flex-direction: column; /* Stack buttons vertically */
+                flex-direction: column;
                 gap: 10px;
             }
 
             .btn {
-                width: 100%; /* Make buttons full width */
+                width: 100%;
                 padding: 10px 15px;
                 font-size: 0.95em;
             }
 
             .invoice-table th, .invoice-table td {
-                padding: 8px; /* Reduce padding for table cells */
+                padding: 8px;
                 font-size: 0.8em;
             }
 
@@ -882,10 +935,9 @@
                 font-size: 0.8em;
             }
 
-            /* Adjust custom alerts/toasts for smaller screens */
             .custom-alert-box {
                 padding: 20px;
-                width: 95%; /* Adjust width */
+                width: 95%;
             }
 
             .custom-alert-box h3 {
@@ -904,25 +956,29 @@
             .toast-container {
                 bottom: 10px;
                 right: 10px;
-                left: 10px; /* Allow toasts to span width */
+                left: 10px;
                 align-items: center;
             }
 
             .toast {
-                min-width: unset; /* Remove min-width constraint */
-                max-width: 100%; /* Take full available width */
+                min-width: unset;
+                max-width: 100%;
                 padding: 10px 15px;
                 font-size: 0.9em;
+            }
+
+            .pdf-images-container img {
+                max-width: 90%; /* On smaller screens, allow images to take more width */
             }
         }
 
         @media (max-width: 480px) {
             body {
-                font-size: 0.9em; /* Even smaller base font size */
+                font-size: 0.9em;
             }
 
             .main-content {
-                padding: 10px; /* Further reduce padding */
+                padding: 10px;
             }
 
             header h1 {
@@ -934,7 +990,7 @@
             }
 
             .sidebar ul li a {
-                padding: 6px 8px; /* Even smaller padding for menu items */
+                padding: 6px 8px;
                 font-size: 0.9em;
             }
 
@@ -951,35 +1007,33 @@
             input[type="date"],
             textarea,
             select {
-                padding: 10px; /* Smaller input padding */
+                padding: 10px;
                 font-size: 0.9em;
             }
 
             .item-list {
-                padding: 15px; /* Smaller item list padding */
+                padding: 15px;
             }
 
             .item-row {
-                gap: 8px; /* Reduce gap in item rows */
+                gap: 8px;
             }
 
             .total-section {
-                font-size: 0.9em; /* Smaller total section font */
+                font-size: 0.9em;
             }
 
             .btn {
-                padding: 8px 12px; /* Smaller button padding */
+                padding: 8px 12px;
                 font-size: 0.9em;
             }
 
             .invoice-table th, .invoice-table td {
-                padding: 6px; /* Further reduce table padding */
+                padding: 6px;
                 font-size: 0.75em;
             }
 
             .pdf-template {
-                /* ... propiedades existentes ... */
-                /* New CSS for better text rendering */
                 text-rendering: optimizeLegibility;
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
@@ -989,7 +1043,7 @@
 </head>
 <body>
     <div class="sidebar">
-        <img src="LogoCompleto.png" alt="Logo Crioser" class="logo">
+        <img src="LogoCompleto.png" alt="Logo OSCAR OSPINO | CRIOSER SOLUTIONS" class="logo">
         <ul>
             <li><a href="#" onclick="showSection('homeSection')" class="active"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="#" onclick="showSection('createInvoiceSection')"><i class="fas fa-file-invoice"></i> Crear Factura</a></li>
@@ -1047,7 +1101,7 @@
                 <input type="hidden" id="invoiceId">
                 <div class="form-group">
                     <label for="tipoDocumento">Tipo de Documento:</label>
-                    <select id="tipoDocumento" name="tipoDocumento" onchange="generateInvoiceNumber(); updateImageInputsVisibility();">
+                    <select id="tipoDocumento" name="tipoDocumento" onchange="generateInvoiceNumber()">
                         <option value="Factura de Servicio / Venta">Factura de Servicio / Venta</option>
                         <option value="Cotización">Cotización</option>
                         <option value="Orden de Servicio">Orden de Servicio</option>
@@ -1055,7 +1109,7 @@
                 </div>
                 <div class="form-group">
                     <label for="fechaFactura">Fecha:</label>
-                    <input type="date" id="fechaFactura" name="fechaFactura" required onchange="generateInvoiceNumber();">
+                    <input type="date" id="fechaFactura" name="fechaFactura" required>
                 </div>
                 <div class="form-group">
                     <label for="numeroFactura">Número de Documento:</label>
@@ -1090,49 +1144,41 @@
                 <div id="itemsContainer" class="item-list">
                 </div>
                 <button type="button" class="add-item-btn" onclick="addItem()">Añadir Ítem</button>
+
+                <div class="form-group">
+                    <label for="imageUpload">Subir Imágenes del Trabajo (Máx 5):</label>
+                    <input type="file" id="imageUpload" accept="image/*" multiple onchange="handleImageUpload(event)">
+                    <div id="imagePreviewsContainer" class="image-preview-container">
+                        </div>
+                </div>
+
                 <div class="total-section">
                     <label>Subtotal:</label>
                     <span id="subtotalDisplay">$0.00</span>
                 </div>
                 <div class="form-group">
                     <label for="impuesto">Impuesto (%):</label>
-                    <input type="number" id="impuesto" name="impuesto" value="0" min="0" step="0.01" oninput="calculateTotal()">
+                    <input type="number" id="impuesto" name="impuesto" min="0" value="0" oninput="calculateTotal()">
                 </div>
                 <div class="form-group">
-                    <label for="descuento">Descuento ($):</label>
-                    <input type="number" id="descuento" name="descuento" value="0" min="0" step="0.01" oninput="calculateTotal()">
+                    <label for="descuento">Descuento (valor numérico):</label>
+                    <input type="number" id="descuento" name="descuento" min="0" value="0" oninput="calculateTotal()">
                 </div>
                 <div class="total-section">
-                    <label>Total:</label>
+                    <label>Total a Pagar:</label>
                     <span id="totalDisplay">$0.00</span>
                 </div>
                 <div class="form-group">
-                    <label for="notas">Notas / Comentarios:</label>
+                    <label for="notas">Notas / Observaciones:</label>
                     <textarea id="notas" name="notas"></textarea>
                 </div>
-                <div id="imageUploadSection" style="display: none;">
-                    <h3>Imágenes (para Orden de Servicio / Cotización)</h3>
-                    <p style="font-size: 0.9em; color: #666;">Máximo 4 imágenes. Se recomienda subir imágenes optimizadas para web (menos de 500KB cada una) para un mejor rendimiento del PDF.</p>
-                    <div class="form-group">
-                        <label id="labelImage1" for="imageUpload1">Imagen 1:</label>
-                        <input type="file" id="imageUpload1" accept="image/*" onchange="handleImageUpload(event, 0)">
-                        <img id="imagePreview1" src="" alt="Previsualización Imagen 1" style="max-width: 150px; height: auto; margin-top: 5px; display: none;">
-                    </div>
-                    <div class="form-group">
-                        <label id="labelImage2" for="imageUpload2">Imagen 2:</label>
-                        <input type="file" id="imageUpload2" accept="image/*" onchange="handleImageUpload(event, 1)">
-                        <img id="imagePreview2" src="" alt="Previsualización Imagen 2" style="max-width: 150px; height: auto; margin-top: 5px; display: none;">
-                    </div>
-                    <div class="form-group">
-                        <label id="labelImage3" for="imageUpload3">Imagen 3:</label>
-                        <input type="file" id="imageUpload3" accept="image/*" onchange="handleImageUpload(event, 2)">
-                        <img id="imagePreview3" src="" alt="Previsualización Imagen 3" style="max-width: 150px; height: auto; margin-top: 5px; display: none;">
-                    </div>
-                    <div class="form-group">
-                        <label id="labelImage4" for="imageUpload4">Imagen 4:</label>
-                        <input type="file" id="imageUpload4" accept="image/*" onchange="handleImageUpload(event, 3)">
-                        <img id="imagePreview4" src="" alt="Previsualización Imagen 4" style="max-width: 150px; height: auto; margin-top: 5px; display: none;">
-                    </div>
+                <div class="form-group">
+                    <label for="estadoFactura">Estado del Documento:</label>
+                    <select id="estadoFactura" name="estadoFactura" required>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="realizado">Realizado</option>
+                        <option value="enproceso">En Proceso</option>
+                    </select>
                 </div>
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">Guardar Factura</button>
@@ -1196,7 +1242,7 @@
     </div>
 
     <footer>
-        <p>© <span id="currentYear"></span> Crioser. Todos los derechos reservados.</p>
+        <p>© <span id="currentYear"></span> OSCAR OSPINO | CRIOSER SOLUTIONS. Todos los derechos reservados.</p>
     </footer>
 
     <div class="custom-alert-overlay" id="customAlertOverlay">
@@ -1208,94 +1254,109 @@
         </div>
     </div>
 
-    <div class="toast-container" id="toastContainer">
-    </div>
+    <div class="toast-container" id="toastContainer"></div>
 
-    <div id="pdfTemplate" class="pdf-template">
+    <div class="pdf-template">
         <div class="pdf-header">
             <div class="pdf-header-info">
-                <h1 id="pdfCompanyName">Crioser Facturación Profesional</h1>
-                <p><strong>Dirección:</strong> <span id="pdfCompanyAddress"></span></p>
-                <p>Teléfono: <span id="pdfCompanyPhone"></span></p>
-                <p>Email: <span id="pdfCompanyEmail"></span></p>
-                <p>NIT: <span id="pdfCompanyNIT"></span></p>
+                <h1 id="pdfHeaderCompanyName">Nombre de tu Empresa</h1>
+                <p id="pdfCompanyAddress">Dirección de tu Empresa</p>
+                <p id="pdfCompanyPhone">Teléfono: (XXX) XXX-XXXX</p>
+                <p id="pdfCompanyEmail">Email: tu_correo@empresa.com</p>
+                <p id="pdfCompanyNIT">NIT: XXX.XXX.XXX-X</p>
             </div>
-            <img id="pdfCompanyLogo" src="LogoCompleto.png" alt="Logo de la Empresa">
+            <img id="pdfCompanyLogo" src="LogoCompleto.png" alt="Logo de tu Empresa" style="max-width: 120pt; height: auto;">
         </div>
+
         <div class="pdf-invoice-details">
             <div>
-                <h3>Cliente</h3>
+                <h3>Cliente:</h3>
                 <p><strong>Nombre:</strong> <span id="pdfClienteNombre"></span></p>
                 <p><strong>Dirección:</strong> <span id="pdfClienteDireccion"></span></p>
-                <p><strong>NIT / C.C.:</strong> <span id="pdfClienteNIT"></span></p>
+                <p><strong>NIT/CC:</strong> <span id="pdfClienteNIT"></span></p>
                 <p><strong>Solicitante:</strong> <span id="pdfSolicitante"></span></p>
                 <p><strong>Correo:</strong> <span id="pdfCorreo"></span></p>
                 <p><strong>Teléfono:</strong> <span id="pdfTelefono"></span></p>
             </div>
             <div>
-                <h3>Detalles del Documento</h3>
+                <h3>Documento:</h3>
                 <p><strong>Tipo:</strong> <span id="pdfTipoDocumento"></span></p>
-                <p><strong>No. Documento:</strong> <span id="pdfNumeroFactura"></span></p>
+                <p><strong>Número:</strong> <span id="pdfNumeroFactura"></span></p>
                 <p><strong>Fecha:</strong> <span id="pdfFechaFactura"></span></p>
+                <p><strong>Emitido por:</strong> <span id="pdfCompanyName"></span></p>
             </div>
         </div>
+
         <table class="pdf-items-table">
             <thead>
                 <tr>
                     <th>Descripción</th>
                     <th>Descripción Adicional</th>
-                    <th class="text-right">Cant.</th>
-                    <th class="text-right">P. Unitario</th>
+                    <th class="text-right">Cantidad</th>
+                    <th class="text-right">Precio Unitario</th>
                     <th class="text-right">Total</th>
                 </tr>
             </thead>
             <tbody id="pdfItemsTableBody">
             </tbody>
         </table>
+
         <div class="pdf-total-section">
             <div>
                 <span>Subtotal:</span>
                 <span id="pdfSubtotal">$0.00</span>
             </div>
         </div>
-        <div class="pdf-total-section" style="margin-top: 10pt;">
+        <div class="pdf-total-section">
             <div>
                 <span>Impuesto (<span id="pdfImpuestoPct">0</span>%):</span>
                 <span id="pdfImpuestoVal">$0.00</span>
             </div>
         </div>
-        <div class="pdf-total-section" style="margin-top: 10pt;">
+        <div class="pdf-total-section">
             <div>
                 <span>Descuento:</span>
-                <span id="pdfDescuento">$0.00</span>
+                <span id="pdfDescuentoVal">$0.00</span>
             </div>
         </div>
-        <div class="pdf-total-section" style="font-size: 13pt; margin-top: 20pt;">
+        <div class="pdf-total-section">
             <div>
-                <span>TOTAL:</span>
+                <span>TOTAL A PAGAR:</span>
                 <span id="pdfTotal">$0.00</span>
             </div>
         </div>
-        <div id="pdfNotes" class="pdf-notes" style="display: none;">
-            <h4>Notas:</h4>
-            <p id="pdfNotesContent"></p>
+
+        <div class="pdf-notes">
+            <h4>Notas / Observaciones:</h4>
+            <p id="pdfNotas"></p>
         </div>
-        <div id="pdfImagesContainer" class="pdf-images-container" style="display: none;">
+
+        <div class="pdf-images-section">
+            <h4 id="pdfImagesTitle">Imágenes del Trabajo</h4>
+            <div id="pdfImagesContainer" class="pdf-images-container">
+            </div>
         </div>
+
         <div class="pdf-footer">
-            <p>Este documento es una <span id="pdfTipoDocumentoFooter"></span> generada digitalmente. Crioser © <span id="pdfCurrentYear"></span>.</p>
+            <p>Gracias por tu preferencia.</p>
+            <p>Este documento es una <span id="pdfTipoDocumentoFooter"></span> generada digitalmente. OSCAR OSPINO | CRIOSER SOLUTIONS © <span id="pdfCurrentYear"></span>.</p>
         </div>
     </div>
+
     <script>
         // Variables globales para almacenar datos
         let invoices = [];
         let currentEditingInvoiceId = null; // Para saber si estamos editando una factura
-        const LOCAL_STORAGE_KEY = 'crioser_facturas_data';
-        const SETTINGS_STORAGE_KEY = 'crioser_settings';
-        const DAILY_NUMBER_KEY_PREFIX = 'crioser_daily_document_numbers_'; // Prefijo para números diarios
-        let settings = {}; // Objeto para almacenar la configuración de la empresa
-        // Array para almacenar las imágenes seleccionadas en Base64
-        let selectedImages = ['', '', '', '']; // Para hasta 4 imágenes
+        const LOCAL_STORAGE_KEY = 'osc_criosersolutions_facturas_data'; // Updated key
+        const SETTINGS_STORAGE_KEY = 'osc_criosersolutions_settings'; // Updated key
+        const LAST_NUMBER_KEY = 'osc_criosersolutions_last_document_numbers'; // Updated key
+
+        // Objeto global para almacenar los ajustes
+        let settings = {};
+
+        // Array para almacenar las imágenes seleccionadas temporalmente
+        let selectedImages = [];
+        const MAX_IMAGES = 5; // Limite de imágenes
 
         // Custom Alert & Confirm Functions
         const customAlertOverlay = document.getElementById('customAlertOverlay');
@@ -1304,6 +1365,7 @@
         const customAlertMessage = document.getElementById('customAlertMessage');
         const customAlertButtons = document.getElementById('customAlertButtons');
         const toastContainer = document.getElementById('toastContainer');
+        const imagePreviewsContainer = document.getElementById('imagePreviewsContainer');
 
         function showAlert(message, type = 'info', duration = 3000) {
             const toast = document.createElement('div');
@@ -1317,9 +1379,11 @@
             }
             toast.innerHTML = `${icon} <span>${message}</span>`;
             toastContainer.appendChild(toast);
+
             // Trigger reflow to apply initial transform before showing
             void toast.offsetWidth;
             toast.classList.add('show');
+
             setTimeout(() => {
                 toast.classList.remove('show');
                 toast.addEventListener('transitionend', () => toast.remove());
@@ -1334,6 +1398,7 @@
                 <button class="btn-ok">Sí</button>
                 <button class="btn-cancel">No</button>
             `;
+
             const btnOk = customAlertButtons.querySelector('.btn-ok');
             const btnCancel = customAlertButtons.querySelector('.btn-cancel');
 
@@ -1358,769 +1423,678 @@
             customAlertOverlay.classList.add('visible');
         }
 
+        // Cargar ajustes y datos guardados al iniciar
+        function loadData() {
+            const storedInvoices = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (storedInvoices) {
+                invoices = JSON.parse(storedInvoices);
+            }
+            loadSettings(); // Cargar ajustes
+        }
 
-        // Funciones de navegación
+        // Guardar datos en localStorage
+        function saveData() {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(invoices));
+        }
+
+        function loadSettings() {
+            const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+            if (storedSettings) {
+                settings = JSON.parse(storedSettings);
+            } else {
+                settings = {}; // Inicializar si no hay ajustes guardados
+            }
+
+            // Poblar campos del formulario de ajustes
+            document.getElementById('companyName').value = settings.companyName || '';
+            document.getElementById('companyAddress').value = settings.companyAddress || '';
+            document.getElementById('companyPhone').value = settings.companyPhone || '';
+            document.getElementById('companyEmail').value = settings.companyEmail || '';
+            document.getElementById('companyNIT').value = settings.companyNIT || '';
+
+            // Cargar y mostrar previsualización del logo Base64
+            const companyLogoPreview = document.getElementById('companyLogoPreview');
+            if (settings.companyLogoBase64) {
+                companyLogoPreview.src = settings.companyLogoBase64;
+                companyLogoPreview.style.display = 'block';
+            } else {
+                companyLogoPreview.src = '';
+                companyLogoPreview.style.display = 'none';
+            }
+
+            // Limpiar el input file por seguridad y consistencia visual (no muestra el archivo cargado)
+            document.getElementById('companyLogoFile').value = '';
+        }
+
+        function saveSettings() {
+            // Actualizar el objeto settings con los valores actuales del formulario
+            settings.companyName = document.getElementById('companyName').value.trim();
+            settings.companyAddress = document.getElementById('companyAddress').value.trim();
+            settings.companyPhone = document.getElementById('companyPhone').value.trim();
+            settings.companyEmail = document.getElementById('companyEmail').value.trim();
+            settings.companyNIT = document.getElementById('companyNIT').value.trim();
+            // companyLogoBase64 ya se actualiza en previewLogo() o clearLogo()
+            localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+            showAlert('Ajustes guardados exitosamente.', 'success');
+
+            // Re-render the PDF template elements if any settings affect them (e.g., company name, logo)
+            updatePdfHeaderInfo();
+        }
+
+        function previewLogo(event) {
+            const file = event.target.files[0];
+            const companyLogoPreview = document.getElementById('companyLogoPreview');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    companyLogoPreview.src = e.target.result;
+                    companyLogoPreview.style.display = 'block';
+                    settings.companyLogoBase64 = e.target.result; // Guardar en Base64
+                };
+                reader.readAsDataURL(file);
+            } else {
+                companyLogoPreview.src = '';
+                companyLogoPreview.style.display = 'none';
+                delete settings.companyLogoBase64;
+            }
+        }
+
+        function clearLogo() {
+            const companyLogoPreview = document.getElementById('companyLogoPreview');
+            companyLogoPreview.src = '';
+            companyLogoPreview.style.display = 'none';
+            document.getElementById('companyLogoFile').value = ''; // Clear file input
+            delete settings.companyLogoBase64;
+            localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings)); // Save updated settings
+            showAlert('Logo limpiado correctamente.', 'info');
+            updatePdfHeaderInfo(); // Update PDF header in case it was showing the logo
+        }
+
+        // Función para cambiar de sección
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
             document.getElementById(sectionId).classList.add('active');
 
+            // Actualizar clase activa en la navegación
             document.querySelectorAll('.sidebar ul li a').forEach(link => {
                 link.classList.remove('active');
             });
             document.querySelector(`.sidebar ul li a[onclick*="${sectionId}"]`).classList.add('active');
 
+            if (sectionId === 'manageInvoicesSection') {
+                renderInvoices();
+            }
             if (sectionId === 'createInvoiceSection') {
-                // Asegurarse de que el número de factura se genere correctamente cuando se navega a esta sección
-                // Si estamos editando, no generar nuevo número, dejar el existente
+                // If navigating to create invoice section, ensure the form is clean if not editing
                 if (!currentEditingInvoiceId) {
-                    generateInvoiceNumber();
-                }
-                updateImageInputsVisibility();
-            } else if (sectionId === 'manageInvoicesSection') {
-                renderInvoicesTable();
-            } else if (sectionId === 'homeSection') {
-                updateSummaryCards();
-                renderInvoicesTable(); // Re-render latest invoices on home
-            } else if (sectionId === 'settingsSection') {
-                loadSettings(); // Cargar la configuración actual al entrar a la sección de ajustes
-            }
-        }
-
-        // Función para obtener prefijo de documento basado en el tipo
-        function getDocPrefix(tipoDocumento) {
-            switch (tipoDocumento) {
-                case 'Factura de Servicio / Venta': return 'FV-';
-                case 'Cotización': return 'COT-';
-                case 'Orden de Servicio': return 'OS-';
-                default: return 'DOC-';
-            }
-        }
-
-        // Generar número de factura basado en la fecha y el tipo de documento
-        function generateInvoiceNumber() {
-            const tipoDocumento = document.getElementById('tipoDocumento').value;
-            const fechaInput = document.getElementById('fechaFactura').value;
-
-            // Si no hay fecha seleccionada, establecer la fecha actual por defecto
-            let fecha;
-            if (fechaInput) {
-                fecha = new Date(fechaInput + 'T00:00:00'); // Añadir T00:00:00 para evitar problemas de zona horaria
-            } else {
-                fecha = new Date();
-                // Establecer la fecha actual en el input si no estaba puesta
-                const today = fecha.toISOString().split('T')[0];
-                document.getElementById('fechaFactura').value = today;
-            }
-
-            const year = fecha.getFullYear();
-            const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
-            const day = fecha.getDate().toString().padStart(2, '0');
-
-            const dateKey = `${year}-${month}-${day}`; // Clave para el almacenamiento diario
-            const dailyNumbers = JSON.parse(localStorage.getItem(DAILY_NUMBER_KEY_PREFIX + dateKey) || '{}');
-            
-            const prefix = getDocPrefix(tipoDocumento);
-            let sequence = (dailyNumbers[tipoDocumento] || 0) + 1;
-
-            // Almacenar el siguiente número si es una nueva factura, no si estamos editando
-            if (!currentEditingInvoiceId) {
-                dailyNumbers[tipoDocumento] = sequence;
-                localStorage.setItem(DAILY_NUMBER_KEY_PREFIX + dateKey, JSON.stringify(dailyNumbers));
-            } else {
-                // Si estamos editando, el número ya está establecido, no debemos incrementarlo
-                // Sin embargo, si el tipo de documento o la fecha han cambiado durante la edición,
-                // necesitaríamos una lógica más compleja para reasignar el número.
-                // Por simplicidad, asumimos que si se está editando, el número es fijo.
-                const currentInvoice = invoices.find(inv => inv.id === currentEditingInvoiceId);
-                if (currentInvoice) {
-                    const currentPrefix = getDocPrefix(currentInvoice.tipoDocumento);
-                    const currentInvoiceDate = new Date(currentInvoice.fechaFactura + 'T00:00:00');
-                    const currentInvoiceDateKey = `${currentInvoiceDate.getFullYear()}-${(currentInvoiceDate.getMonth() + 1).toString().padStart(2, '0')}-${currentInvoiceDate.getDate().toString().padStart(2, '0')}`;
-
-                    if (currentPrefix === prefix && currentInvoiceDateKey === dateKey) {
-                        // Si el prefijo y la fecha son los mismos, el número no cambia
-                        const parts = currentInvoice.numeroFactura.split('-');
-                        sequence = parseInt(parts[parts.length - 1]);
-                        // Ajustamos la secuencia en el dailyNumbers para asegurar que el siguiente número después de guardar no colisione
-                        dailyNumbers[tipoDocumento] = Math.max(dailyNumbers[tipoDocumento] || 0, sequence);
-                        localStorage.setItem(DAILY_NUMBER_KEY_PREFIX + dateKey, JSON.stringify(dailyNumbers));
-
-                    } else {
-                        // Si el tipo de documento o la fecha cambian durante la edición,
-                        // generamos un nuevo número basado en la nueva fecha/tipo y el último consecutivo.
-                        // Y decrementamos el conteo del tipo/fecha anterior si aplica.
-                        if (currentPrefix === prefix) { // Solo si cambia la fecha pero no el tipo
-                             // No actualizamos dailyNumbers para la fecha anterior,
-                             // solo generamos un nuevo número para la nueva fecha.
-                        } else { // Si cambia el tipo de documento
-                            // No hacemos nada para el tipo de documento anterior, solo generamos uno nuevo.
-                        }
-                        sequence = (dailyNumbers[tipoDocumento] || 0) + 1;
-                        dailyNumbers[tipoDocumento] = sequence;
-                        localStorage.setItem(DAILY_NUMBER_KEY_PREFIX + dateKey, JSON.stringify(dailyNumbers));
-                    }
+                    resetForm();
                 }
             }
-            
-            // Si la secuencia es de un solo dígito y es la primera del día, añádele un cero al inicio para que el número sea de dos dígitos.
-            const formattedSequence = sequence.toString().padStart(2, '0');
-            document.getElementById('numeroFactura').value = `${prefix}${year}${month}${day}-${formattedSequence}`;
         }
 
-
-        // Funciones para añadir/eliminar ítems de la factura
+        // Función para añadir un nuevo ítem a la factura
         function addItem(item = {}) {
             const itemsContainer = document.getElementById('itemsContainer');
-            const newItemDiv = document.createElement('div');
-            newItemDiv.classList.add('item-row');
-            newItemDiv.innerHTML = `
+            const itemRow = document.createElement('div');
+            itemRow.classList.add('item-row');
+            itemRow.innerHTML = `
                 <div class="form-group">
                     <label>Descripción:</label>
-                    <input type="text" class="item-description" value="${item.description || ''}" oninput="calculateTotal()">
+                    <input type="text" class="item-descripcion" value="${item.descripcion || ''}" placeholder="Descripción del servicio/producto..." oninput="calculateTotal()" required>
                 </div>
                 <div class="form-group">
                     <label>Descripción Adicional:</label>
-                    <input type="text" class="item-additional-description" value="${item.additionalDescription || ''}" oninput="calculateTotal()">
+                    <input type="text" class="item-descripcion-adicional" value="${item.descripcionAdicional || ''}" placeholder="Detalles adicionales...">
                 </div>
                 <div class="form-group">
-                    <label>Cant.:</label>
-                    <input type="number" class="item-quantity" value="${item.quantity || 1}" min="1" oninput="calculateTotal()">
+                    <label>Cantidad:</label>
+                    <input type="number" class="item-cantidad" value="${item.cantidad || 1}" min="1" oninput="calculateTotal()" required>
                 </div>
                 <div class="form-group">
                     <label>P. Unitario:</label>
-                    <input type="number" class="item-unit-price" value="${item.unitPrice || 0}" min="0" step="0.01" oninput="calculateTotal()">
+                    <input type="number" class="item-precio-unitario" value="${item.precioUnitario || 0}" min="0" step="0.01" oninput="calculateTotal()" required>
                 </div>
                 <div class="form-group">
                     <label>Total Ítem:</label>
-                    <input type="text" class="item-total" value="${(item.quantity * item.unitPrice || 0).toFixed(2)}" readonly>
+                    <span class="item-total-display">$0.00</span>
                 </div>
-                <button type="button" class="remove-item-btn" onclick="removeItem(this)"><i class="fas fa-trash"></i></button>
+                <button type="button" class="remove-item-btn" onclick="removeItem(this)"><i class="fas fa-times-circle"></i></button>
             `;
-            itemsContainer.appendChild(newItemDiv);
+            itemsContainer.appendChild(itemRow);
             calculateTotal();
         }
 
+        // Función para eliminar un ítem de la factura
         function removeItem(button) {
             button.closest('.item-row').remove();
             calculateTotal();
         }
 
-        // Calcular totales de la factura
+        // Función para calcular los totales de la factura
         function calculateTotal() {
             let subtotal = 0;
-            const itemRows = document.querySelectorAll('.item-row');
-            itemRows.forEach(row => {
-                const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
-                const unitPrice = parseFloat(row.querySelector('.item-unit-price').value) || 0;
-                const itemTotal = quantity * unitPrice;
-                row.querySelector('.item-total').value = itemTotal.toFixed(2);
+            document.querySelectorAll('.item-row').forEach(row => {
+                const cantidad = parseFloat(row.querySelector('.item-cantidad').value) || 0;
+                const precioUnitario = parseFloat(row.querySelector('.item-precio-unitario').value) || 0;
+                const itemTotal = cantidad * precioUnitario;
+                row.querySelector('.item-total-display').textContent = `$${itemTotal.toFixed(2)}`;
                 subtotal += itemTotal;
             });
 
+            document.getElementById('subtotalDisplay').textContent = `$${subtotal.toFixed(2)}`;
+
             const impuestoPct = parseFloat(document.getElementById('impuesto').value) || 0;
+            const impuestoVal = subtotal * (impuestoPct / 100);
+
             const descuento = parseFloat(document.getElementById('descuento').value) || 0;
 
-            const impuestoVal = subtotal * (impuestoPct / 100);
-            let total = subtotal + impuestoVal - descuento;
-
-            if (total < 0) total = 0; // Asegurar que el total no sea negativo
-
-            document.getElementById('subtotalDisplay').textContent = `$${subtotal.toFixed(2)}`;
+            const total = subtotal + impuestoVal - descuento;
             document.getElementById('totalDisplay').textContent = `$${total.toFixed(2)}`;
         }
 
-        // Cargar/Guardar facturas
-        function loadInvoices() {
-            const storedInvoices = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (storedInvoices) {
-                invoices = JSON.parse(storedInvoices);
+        // Generar número de factura basado en el tipo de documento
+        function generateInvoiceNumber() {
+            const tipoDocumento = document.getElementById('tipoDocumento').value;
+            let lastNumbers = JSON.parse(localStorage.getItem(LAST_NUMBER_KEY)) || {};
+            let currentYear = new Date().getFullYear();
+            let prefix = '';
+
+            switch (tipoDocumento) {
+                case 'Factura de Servicio / Venta': prefix = 'FSV'; break;
+                case 'Cotización': prefix = 'COT'; break;
+                case 'Orden de Servicio': prefix = 'OS'; break;
+                default: prefix = 'DOC';
             }
-        }
 
-        function saveInvoices() {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(invoices));
-            updateSummaryCards();
-            renderInvoicesTable();
-        }
+            if (!lastNumbers[currentYear]) {
+                lastNumbers[currentYear] = {};
+            }
+            if (!lastNumbers[currentYear][prefix]) {
+                lastNumbers[currentYear][prefix] = 0;
+            }
 
-        // Cargar/Guardar configuración
-        function loadSettings() {
-            const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-            if (storedSettings) {
-                settings = JSON.parse(storedSettings);
-                document.getElementById('companyName').value = settings.companyName || '';
-                document.getElementById('companyAddress').value = settings.companyAddress || '';
-                document.getElementById('companyPhone').value = settings.companyPhone || '';
-                document.getElementById('companyEmail').value = settings.companyEmail || '';
-                document.getElementById('companyNIT').value = settings.companyNIT || '';
-                if (settings.companyLogo) {
-                    document.getElementById('companyLogoPreview').src = settings.companyLogo;
-                    document.getElementById('companyLogoPreview').style.display = 'block';
-                } else {
-                    document.getElementById('companyLogoPreview').src = '';
-                    document.getElementById('companyLogoPreview').style.display = 'none';
+            // Si estamos editando y el número ya existe, no lo incrementamos
+            if (currentEditingInvoiceId) {
+                const existingInvoice = invoices.find(inv => inv.id === currentEditingInvoiceId);
+                if (existingInvoice && existingInvoice.numeroFactura.startsWith(prefix)) {
+                    document.getElementById('numeroFactura').value = existingInvoice.numeroFactura;
+                    return;
                 }
-            } else {
-                // Valores por defecto si no hay configuración guardada
-                settings = {
-                    companyName: 'Crioser Facturación Profesional',
-                    companyAddress: 'Dirección de la Empresa',
-                    companyPhone: '',
-                    companyEmail: '',
-                    companyNIT: '',
-                    companyLogo: 'LogoCompleto.png' // Ruta por defecto para el logo
-                };
-                // Asegurarse de que el logo por defecto se muestre
-                document.getElementById('companyLogoPreview').src = settings.companyLogo;
-                document.getElementById('companyLogoPreview').style.display = 'block';
             }
+            
+            // Incrementamos y guardamos el nuevo número
+            lastNumbers[currentYear][prefix]++;
+            localStorage.setItem(LAST_NUMBER_KEY, JSON.stringify(lastNumbers));
+            
+            const nextNumber = lastNumbers[currentYear][prefix].toString().padStart(4, '0');
+            document.getElementById('numeroFactura').value = `${prefix}-${currentYear}-${nextNumber}`;
         }
 
-        function saveSettings() {
-            settings.companyName = document.getElementById('companyName').value;
-            settings.companyAddress = document.getElementById('companyAddress').value;
-            settings.companyPhone = document.getElementById('companyPhone').value;
-            settings.companyEmail = document.getElementById('companyEmail').value;
-            settings.companyNIT = document.getElementById('companyNIT').value;
-            // El logo se guarda en handleImageUpload para companyLogoFile
-            localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-            showAlert('Configuración guardada exitosamente.', 'success');
-        }
-
-        function previewLogo(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('companyLogoPreview').src = e.target.result;
-                    document.getElementById('companyLogoPreview').style.display = 'block';
-                    settings.companyLogo = e.target.result; // Guardar como Base64
-                };
-                reader.readAsDataURL(file);
-            } else {
-                document.getElementById('companyLogoPreview').src = '';
-                document.getElementById('companyLogoPreview').style.display = 'none';
-                settings.companyLogo = '';
-            }
-        }
-
-        function clearLogo() {
-            document.getElementById('companyLogoFile').value = ''; // Limpiar input file
-            document.getElementById('companyLogoPreview').src = '';
-            document.getElementById('companyLogoPreview').style.display = 'none';
-            settings.companyLogo = '';
-            showAlert('Logo limpiado. Recuerda guardar los ajustes.', 'info');
-        }
-
-
-        // Guardar/Actualizar factura
+        // Manejar el envío del formulario de factura
         document.getElementById('invoiceForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            
+            const form = event.target;
+            // Validar que al menos un ítem haya sido añadido
+            if (document.querySelectorAll('.item-row').length === 0) {
+                showAlert('Debe añadir al menos un ítem a la factura.', 'error');
+                return;
+            }
 
-            const invoiceId = document.getElementById('invoiceId').value || `inv-${Date.now()}`;
-            const tipoDocumento = document.getElementById('tipoDocumento').value;
-            const fechaFactura = document.getElementById('fechaFactura').value;
-            const numeroFactura = document.getElementById('numeroFactura').value;
-            const clienteNombre = document.getElementById('clienteNombre').value;
-            const clienteDireccion = document.getElementById('clienteDireccion').value;
-            const clienteNIT = document.getElementById('clienteNIT').value;
-            const solicitante = document.getElementById('solicitante').value;
-            const correo = document.getElementById('correo').value;
-            const telefono = document.getElementById('telefono').value;
+            const invoiceData = {
+                id: currentEditingInvoiceId || Date.now(), // Usar ID existente si estamos editando, de lo contrario, generar uno nuevo
+                tipoDocumento: form.tipoDocumento.value,
+                fechaFactura: form.fechaFactura.value,
+                numeroFactura: form.numeroFactura.value,
+                cliente: {
+                    nombre: form.clienteNombre.value.trim(),
+                    direccion: form.clienteDireccion.value.trim(),
+                    nit: form.clienteNIT.value.trim(),
+                    solicitante: form.solicitante.value.trim(),
+                    correo: form.correo.value.trim(),
+                    telefono: form.telefono.value.trim()
+                },
+                items: [],
+                impuesto: parseFloat(form.impuesto.value) || 0,
+                descuento: parseFloat(form.descuento.value) || 0,
+                subtotal: parseFloat(document.getElementById('subtotalDisplay').textContent.replace('$', '')),
+                total: parseFloat(document.getElementById('totalDisplay').textContent.replace('$', '')),
+                notas: form.notas.value.trim(),
+                imagenes: [...selectedImages], // Guardar copias Base64 de las imágenes
+                estado: form.estadoFactura.value // Obtener el estado del formulario
+            };
 
-            const items = [];
             document.querySelectorAll('.item-row').forEach(row => {
-                items.push({
-                    description: row.querySelector('.item-description').value,
-                    additionalDescription: row.querySelector('.item-additional-description').value,
-                    quantity: parseFloat(row.querySelector('.item-quantity').value) || 0,
-                    unitPrice: parseFloat(row.querySelector('.item-unit-price').value) || 0
+                invoiceData.items.push({
+                    descripcion: row.querySelector('.item-descripcion').value.trim(),
+                    descripcionAdicional: row.querySelector('.item-descripcion-adicional').value.trim(),
+                    cantidad: parseFloat(row.querySelector('.item-cantidad').value) || 0,
+                    precioUnitario: parseFloat(row.querySelector('.item-precio-unitario').value) || 0
                 });
             });
 
-            const impuesto = parseFloat(document.getElementById('impuesto').value) || 0;
-            const descuento = parseFloat(document.getElementById('descuento').value) || 0;
-            const notas = document.getElementById('notas').value;
-
-            // Recalcular totales para asegurar que estén actualizados al guardar
-            let subtotal = 0;
-            items.forEach(item => {
-                subtotal += item.quantity * item.unitPrice;
-            });
-            const impuestoVal = subtotal * (impuesto / 100);
-            let total = subtotal + impuestoVal - descuento;
-            if (total < 0) total = 0;
-
-            const newInvoice = {
-                id: invoiceId,
-                tipoDocumento,
-                fechaFactura,
-                numeroFactura,
-                clienteNombre,
-                clienteDireccion,
-                clienteNIT,
-                solicitante,
-                correo,
-                telefono,
-                items,
-                subtotal: subtotal.toFixed(2),
-                impuesto: impuesto.toFixed(2), // Guardar el porcentaje
-                impuestoVal: impuestoVal.toFixed(2), // Guardar el valor calculado del impuesto
-                descuento: descuento.toFixed(2),
-                total: total.toFixed(2),
-                notas,
-                images: [...selectedImages], // Guardar las imágenes Base64
-                status: 'Pendiente' // Estado inicial
-            };
-
-            const existingIndex = invoices.findIndex(inv => inv.id === invoiceId);
-            if (existingIndex > -1) {
-                invoices[existingIndex] = newInvoice;
-                showAlert('Factura actualizada exitosamente.', 'success');
+            if (currentEditingInvoiceId) {
+                // Actualizar factura existente
+                const index = invoices.findIndex(inv => inv.id === currentEditingInvoiceId);
+                if (index !== -1) {
+                    invoices[index] = invoiceData;
+                    showAlert('Factura actualizada exitosamente.', 'success');
+                }
+                currentEditingInvoiceId = null; // Reset editing state
             } else {
-                invoices.unshift(newInvoice); // Añadir al principio para que las más nuevas estén arriba
+                // Añadir nueva factura
+                invoices.push(invoiceData);
                 showAlert('Factura guardada exitosamente.', 'success');
             }
-            saveInvoices();
+
+            saveData();
             resetForm();
-            showSection('manageInvoicesSection');
+            renderInvoices();
+            showSection('manageInvoicesSection'); // Redirigir a la gestión de facturas
         });
 
+        // Limpiar formulario
         function resetForm() {
             document.getElementById('invoiceForm').reset();
             document.getElementById('invoiceId').value = '';
             document.getElementById('itemsContainer').innerHTML = '';
-            addItem(); // Añadir un ítem por defecto
+            document.getElementById('imagePreviewsContainer').innerHTML = '';
+            selectedImages = []; // Limpiar las imágenes seleccionadas
+            document.getElementById('imageUpload').value = ''; // Limpiar el input de archivo
+            document.getElementById('estadoFactura').value = 'pendiente'; // Resetear el estado a "Pendiente"
             calculateTotal();
-            currentEditingInvoiceId = null; // Resetear el ID de edición
-            generateInvoiceNumber(); // Generar un nuevo número de factura
-            selectedImages = ['', '', '', '']; // Limpiar imágenes seleccionadas
-            for (let i = 1; i <= 4; i++) {
-                document.getElementById(`imageUpload${i}`).value = '';
-                document.getElementById(`imagePreview${i}`).style.display = 'none';
-                document.getElementById(`imagePreview${i}`).src = '';
-            }
-            updateImageInputsVisibility(); // Ocultar si es Factura
-            document.getElementById('imageUploadSection').style.display = 'none'; // Asegurarse de que esté oculto por defecto
-            document.getElementById('tipoDocumento').value = 'Factura de Servicio / Venta'; // Resetear a tipo por defecto
+            generateInvoiceNumber(); // Generar un nuevo número para una nueva factura
+            currentEditingInvoiceId = null; // Asegurarse de que no estamos en modo edición
         }
 
         // Renderizar tabla de facturas
-        function renderInvoicesTable() {
-            const tableBody = document.getElementById('invoicesTableBody');
-            tableBody.innerHTML = ''; // Limpiar tabla
-
-            const searchTerm = document.getElementById('searchInvoice').value.toLowerCase();
-            const filteredInvoices = invoices.filter(invoice =>
-                invoice.clienteNombre.toLowerCase().includes(searchTerm) ||
-                invoice.numeroFactura.toLowerCase().includes(searchTerm)
-            );
+        function renderInvoices(filteredInvoices = invoices) {
+            const invoicesTableBody = document.getElementById('invoicesTableBody');
+            invoicesTableBody.innerHTML = '';
 
             if (filteredInvoices.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay facturas para mostrar.</td></tr>';
+                invoicesTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay facturas para mostrar.</td></tr>';
+                document.getElementById('totalInvoices').textContent = '0';
+                document.getElementById('totalEarnings').textContent = '$0.00';
+                document.getElementById('invoicesThisYear').textContent = '0';
+                document.getElementById('latestInvoicesTableBody').innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay facturas recientes.</td></tr>';
                 return;
             }
 
-            filteredInvoices.forEach(invoice => {
-                const row = tableBody.insertRow();
+            // Ordenar facturas por fecha descendente
+            const sortedInvoices = [...filteredInvoices].sort((a, b) => new Date(b.fechaFactura) - new Date(a.fechaFactura));
+
+            let totalInvoicesCount = 0;
+            let totalEarnings = 0;
+            let invoicesThisYearCount = 0;
+            const currentYear = new Date().getFullYear();
+
+            // Populate main invoices table
+            sortedInvoices.forEach(invoice => {
+                totalInvoicesCount++;
+                totalEarnings += invoice.total;
+                if (new Date(invoice.fechaFactura).getFullYear() === currentYear) {
+                    invoicesThisYearCount++;
+                }
+
+                const row = invoicesTableBody.insertRow();
                 row.innerHTML = `
                     <td>${invoice.numeroFactura}</td>
-                    <td>${invoice.clienteNombre}</td>
+                    <td>${invoice.cliente.nombre}</td>
                     <td>${invoice.fechaFactura}</td>
-                    <td>$${invoice.total}</td>
-                    <td><span class="status ${invoice.status.toLowerCase().replace(/\s/g, '')}">${invoice.status}</span></td>
-                    <td class="actions">
-                        <button class="btn btn-primary" onclick="editInvoice('${invoice.id}')" title="Editar"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-success" onclick="generatePdfForInvoice('${invoice.id}')" title="Generar PDF"><i class="fas fa-file-pdf"></i></button>
-                        <button class="btn btn-secondary" onclick="duplicateInvoice('${invoice.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>
-                        <button class="btn btn-danger" onclick="deleteInvoice('${invoice.id}')" title="Eliminar"><i class="fas fa-trash"></i></button>
-                        <select onchange="updateInvoiceStatus('${invoice.id}', this.value)">
-                            <option value="Pendiente" ${invoice.status === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-                            <option value="Realizado" ${invoice.status === 'Realizado' ? 'selected' : ''}>Realizado</option>
-                            <option value="En Proceso" ${invoice.status === 'En Proceso' ? 'selected' : ''}>En Proceso</option>
+                    <td>$${invoice.total.toFixed(2)}</td>
+                    <td>
+                        <select class="status-select ${invoice.estado}" onchange="changeInvoiceStatus(${invoice.id}, this.value)">
+                            <option value="pendiente" ${invoice.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                            <option value="realizado" ${invoice.estado === 'realizado' ? 'selected' : ''}>Realizado</option>
+                            <option value="enproceso" ${invoice.estado === 'enproceso' ? 'selected' : ''}>En Proceso</option>
                         </select>
+                    </td>
+                    <td class="actions">
+                        <button class="btn btn-info btn-sm" onclick="editInvoice(${invoice.id})"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDeleteInvoice(${invoice.id})"><i class="fas fa-trash"></i> Eliminar</button>
+                        <button class="btn btn-success btn-sm" onclick="generatePdf(${invoice.id})"><i class="fas fa-file-pdf"></i> PDF</button>
                     </td>
                 `;
             });
 
-            // Actualizar últimas facturas en la sección de inicio también
-            renderLatestInvoices();
-        }
-
-        // Función para duplicar una factura
-        function duplicateInvoice(invoiceId) {
-            showConfirm('¿Estás seguro de que quieres duplicar este proyecto? Se creará una copia con un nuevo número.', () => {
-                const originalInvoice = invoices.find(inv => inv.id === invoiceId);
-                if (originalInvoice) {
-                    // Realizar una copia profunda del objeto
-                    const duplicatedInvoice = JSON.parse(JSON.stringify(originalInvoice));
-
-                    // Generar un nuevo ID único
-                    duplicatedInvoice.id = `inv-${Date.now()}`;
-
-                    // Obtener la fecha actual para el nuevo número de documento
-                    const today = new Date();
-                    const year = today.getFullYear();
-                    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-                    const day = today.getDate().toString().padStart(2, '0');
-                    const dateKey = `${year}-${month}-${day}`;
-
-                    // Obtener el prefijo del tipo de documento original
-                    const prefix = getDocPrefix(duplicatedInvoice.tipoDocumento);
-                    
-                    // Obtener los números diarios para hoy
-                    const dailyNumbers = JSON.parse(localStorage.getItem(DAILY_NUMBER_KEY_PREFIX + dateKey) || '{}');
-                    let sequence = (dailyNumbers[duplicatedInvoice.tipoDocumento] || 0) + 1;
-                    
-                    // Actualizar el contador diario
-                    dailyNumbers[duplicatedInvoice.tipoDocumento] = sequence;
-                    localStorage.setItem(DAILY_NUMBER_KEY_PREFIX + dateKey, JSON.stringify(dailyNumbers));
-
-                    // Formatear la secuencia para que tenga al menos dos dígitos
-                    const formattedSequence = sequence.toString().padStart(2, '0');
-
-                    // Asignar el nuevo número de documento
-                    duplicatedInvoice.numeroFactura = `${prefix}${year}${month}${day}-${formattedSequence}`;
-
-                    // Marcar como "Duplicado" o ajustar según necesidad
-                    duplicatedInvoice.notas = `(Duplicado de ${originalInvoice.numeroFactura}) ${originalInvoice.notas || ''}`;
-                    duplicatedInvoice.fechaFactura = today.toISOString().split('T')[0]; // Fecha actual para el duplicado
-                    duplicatedInvoice.status = 'Pendiente'; // O el estado que se prefiera para un duplicado
-
-                    // Añadir la factura duplicada a la lista
-                    invoices.unshift(duplicatedInvoice);
-                    saveInvoices();
-                    renderInvoicesTable();
-                    showAlert('Proyecto duplicado exitosamente.', 'success');
-                } else {
-                    showAlert('Error: Proyecto no encontrado para duplicar.', 'error');
-                }
-            });
-        }
-
-
-        function editInvoice(id) {
-            const invoiceToEdit = invoices.find(invoice => invoice.id === id);
-            if (invoiceToEdit) {
-                currentEditingInvoiceId = id; // Establecer el ID de la factura que se está editando
-
-                document.getElementById('invoiceId').value = invoiceToEdit.id;
-                document.getElementById('tipoDocumento').value = invoiceToEdit.tipoDocumento;
-                document.getElementById('fechaFactura').value = invoiceToEdit.fechaFactura;
-                document.getElementById('numeroFactura').value = invoiceToEdit.numeroFactura;
-                document.getElementById('clienteNombre').value = invoiceToEdit.clienteNombre;
-                document.getElementById('clienteDireccion').value = invoiceToEdit.clienteDireccion;
-                document.getElementById('clienteNIT').value = invoiceToEdit.clienteNIT;
-                document.getElementById('solicitante').value = invoiceToEdit.solicitante;
-                document.getElementById('correo').value = invoiceToEdit.correo;
-                document.getElementById('telefono').value = invoiceToEdit.telefono;
-
-                // Limpiar ítems existentes y añadir los de la factura a editar
-                document.getElementById('itemsContainer').innerHTML = '';
-                invoiceToEdit.items.forEach(item => addItem(item));
-
-                document.getElementById('impuesto').value = parseFloat(invoiceToEdit.impuesto);
-                document.getElementById('descuento').value = parseFloat(invoiceToEdit.descuento);
-                document.getElementById('notas').value = invoiceToEdit.notas;
-
-                // Cargar imágenes
-                selectedImages = ['', '', '', '']; // Resetear
-                for (let i = 0; i < invoiceToEdit.images.length; i++) {
-                    if (invoiceToEdit.images[i]) {
-                        selectedImages[i] = invoiceToEdit.images[i];
-                        const imgPreview = document.getElementById(`imagePreview${i + 1}`);
-                        imgPreview.src = invoiceToEdit.images[i];
-                        imgPreview.style.display = 'block';
-                    } else {
-                        document.getElementById(`imagePreview${i + 1}`).src = '';
-                        document.getElementById(`imagePreview${i + 1}`).style.display = 'none';
-                    }
-                    // Limpiar input file para que se pueda volver a seleccionar la misma imagen si se desea
-                    document.getElementById(`imageUpload${i + 1}`).value = '';
-                }
-
-                updateImageInputsVisibility(); // Mostrar/Ocultar sección de imágenes según el tipo de documento
-
-                calculateTotal(); // Recalcular totales con los datos cargados
-
-                showSection('createInvoiceSection'); // Ir a la sección de crear/editar
-                showAlert('Factura cargada para edición.', 'info');
-            } else {
-                showAlert('Error: Factura no encontrada.', 'error');
-            }
-        }
-
-        function deleteInvoice(id) {
-            showConfirm('¿Estás seguro de que quieres eliminar este proyecto? Esta acción no se puede deshacer.', () => {
-                invoices = invoices.filter(invoice => invoice.id !== id);
-                saveInvoices();
-                renderInvoicesTable();
-                showAlert('Factura eliminada exitosamente.', 'success');
-            });
-        }
-
-        function updateInvoiceStatus(id, newStatus) {
-            const invoiceIndex = invoices.findIndex(invoice => invoice.id === id);
-            if (invoiceIndex > -1) {
-                invoices[invoiceIndex].status = newStatus;
-                saveInvoices();
-                renderInvoicesTable();
-                showAlert(`Estado de factura ${invoices[invoiceIndex].numeroFactura} actualizado a ${newStatus}.`, 'info');
-            }
-        }
-
-        // Actualizar tarjetas de resumen
-        function updateSummaryCards() {
-            document.getElementById('totalInvoices').textContent = invoices.length;
-
-            let totalEarnings = 0;
-            const currentYear = new Date().getFullYear();
-            let invoicesThisYear = 0;
-
-            invoices.forEach(invoice => {
-                totalEarnings += parseFloat(invoice.total);
-                const invoiceYear = new Date(invoice.fechaFactura).getFullYear();
-                if (invoiceYear === currentYear) {
-                    invoicesThisYear++;
-                }
-            });
-
+            // Update summary cards
+            document.getElementById('totalInvoices').textContent = totalInvoicesCount;
             document.getElementById('totalEarnings').textContent = `$${totalEarnings.toFixed(2)}`;
-            document.getElementById('invoicesThisYear').textContent = invoicesThisYear;
-        }
+            document.getElementById('invoicesThisYear').textContent = invoicesThisYearCount;
 
-        // Renderizar últimas facturas en Home
-        function renderLatestInvoices() {
+            // Populate latest invoices table (first 5 recent invoices)
             const latestInvoicesTableBody = document.getElementById('latestInvoicesTableBody');
             latestInvoicesTableBody.innerHTML = '';
-            
-            // Ordenar por fecha de más reciente a más antigua
-            const sortedInvoices = [...invoices].sort((a, b) => new Date(b.fechaFactura) - new Date(a.fechaFactura));
+            const latestInvoices = sortedInvoices.slice(0, 5); // Get the 5 most recent
 
-            const latest5 = sortedInvoices.slice(0, 5); // Obtener las 5 más recientes
-
-            if (latest5.length === 0) {
+            if (latestInvoices.length === 0) {
                 latestInvoicesTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay facturas recientes.</td></tr>';
-                return;
-            }
-
-            latest5.forEach(invoice => {
-                const row = latestInvoicesTableBody.insertRow();
-                row.innerHTML = `
-                    <td>${invoice.numeroFactura}</td>
-                    <td>${invoice.clienteNombre}</td>
-                    <td>${invoice.fechaFactura}</td>
-                    <td>$${invoice.total}</td>
-                    <td><span class="status ${invoice.status.toLowerCase().replace(/\s/g, '')}">${invoice.status}</span></td>
-                `;
-            });
-        }
-
-        // Manejo de carga y previsualización de imágenes
-        function handleImageUpload(event, index) {
-            const file = event.target.files[0];
-            if (file) {
-                if (file.size > 500 * 1024) { // 500KB
-                    showAlert('La imagen es demasiado grande. Por favor, suba una imagen de menos de 500KB.', 'warning');
-                    event.target.value = ''; // Clear the input
-                    document.getElementById(`imagePreview${index + 1}`).src = '';
-                    document.getElementById(`imagePreview${index + 1}`).style.display = 'none';
-                    selectedImages[index] = '';
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    selectedImages[index] = e.target.result; // Guardar como Base64
-                    const imgPreview = document.getElementById(`imagePreview${index + 1}`);
-                    imgPreview.src = e.target.result;
-                    imgPreview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
             } else {
-                selectedImages[index] = '';
-                document.getElementById(`imagePreview${index + 1}`).src = '';
-                document.getElementById(`imagePreview${index + 1}`).style.display = 'none';
+                latestInvoices.forEach(invoice => {
+                    const row = latestInvoicesTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${invoice.numeroFactura}</td>
+                        <td>${invoice.cliente.nombre}</td>
+                        <td>${invoice.fechaFactura}</td>
+                        <td>$${invoice.total.toFixed(2)}</td>
+                        <td><span class="status ${invoice.estado}">${invoice.estado.charAt(0).toUpperCase() + invoice.estado.slice(1)}</span></td>
+                    `;
+                });
             }
         }
 
-        function updateImageInputsVisibility() {
-            const tipoDocumento = document.getElementById('tipoDocumento').value;
-            const imageUploadSection = document.getElementById('imageUploadSection');
-            if (tipoDocumento === 'Orden de Servicio' || tipoDocumento === 'Cotización') {
-                imageUploadSection.style.display = 'block';
-            } else {
-                imageUploadSection.style.display = 'none';
-                // Limpiar imágenes y previsualizaciones al ocultar la sección
-                selectedImages = ['', '', '', ''];
-                for (let i = 1; i <= 4; i++) {
-                    document.getElementById(`imageUpload${i}`).value = '';
-                    document.getElementById(`imagePreview${i}`).src = '';
-                    document.getElementById(`imagePreview${i}`).style.display = 'none';
-                }
+        // Editar factura
+        function editInvoice(id) {
+            const invoice = invoices.find(inv => inv.id === id);
+            if (invoice) {
+                currentEditingInvoiceId = id; // Establecer el ID de la factura que se está editando
+
+                document.getElementById('invoiceId').value = invoice.id;
+                document.getElementById('tipoDocumento').value = invoice.tipoDocumento;
+                document.getElementById('fechaFactura').value = invoice.fechaFactura;
+                document.getElementById('numeroFactura').value = invoice.numeroFactura; // Mantener el número existente
+
+                document.getElementById('clienteNombre').value = invoice.cliente.nombre;
+                document.getElementById('clienteDireccion').value = invoice.cliente.direccion;
+                document.getElementById('clienteNIT').value = invoice.cliente.nit;
+                document.getElementById('solicitante').value = invoice.cliente.solicitante;
+                document.getElementById('correo').value = invoice.cliente.correo;
+                document.getElementById('telefono').value = invoice.cliente.telefono;
+
+                // Limpiar y añadir ítems
+                document.getElementById('itemsContainer').innerHTML = '';
+                invoice.items.forEach(item => addItem(item));
+
+                // Cargar imágenes
+                selectedImages = [...invoice.imagenes];
+                renderImagePreviews();
+
+                document.getElementById('impuesto').value = invoice.impuesto;
+                document.getElementById('descuento').value = invoice.descuento;
+                document.getElementById('notas').value = invoice.notas;
+                document.getElementById('estadoFactura').value = invoice.estado; // Set the status
+
+                calculateTotal();
+                showSection('createInvoiceSection'); // Volver a la sección de crear factura para editar
             }
+        }
+
+        // Función para cambiar el estado de una factura directamente desde la tabla de gestión
+        function changeInvoiceStatus(id, newStatus) {
+            const invoiceIndex = invoices.findIndex(inv => inv.id === id);
+            if (invoiceIndex !== -1) {
+                invoices[invoiceIndex].estado = newStatus;
+                saveData();
+                renderInvoices(); // Re-render para actualizar la tabla y el estilo
+                showAlert(`Estado de factura ${invoices[invoiceIndex].numeroFactura} cambiado a "${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}".`, 'success');
+            } else {
+                showAlert('Error: No se encontró la factura para actualizar el estado.', 'error');
+            }
+        }
+
+        // Confirmar eliminación de factura
+        function confirmDeleteInvoice(id) {
+            showConfirm('¿Estás seguro de que quieres eliminar esta factura? Esta acción no se puede deshacer.', () => deleteInvoice(id));
+        }
+
+        // Eliminar factura
+        function deleteInvoice(id) {
+            const initialLength = invoices.length;
+            invoices = invoices.filter(inv => inv.id !== id);
+            if (invoices.length < initialLength) {
+                saveData();
+                renderInvoices();
+                showAlert('Factura eliminada exitosamente.', 'success');
+            } else {
+                showAlert('Error al eliminar la factura.', 'error');
+            }
+        }
+
+        // Filtrar facturas
+        function filterInvoices() {
+            const searchTerm = document.getElementById('searchInvoice').value.toLowerCase();
+            const filtered = invoices.filter(invoice =>
+                invoice.numeroFactura.toLowerCase().includes(searchTerm) ||
+                invoice.cliente.nombre.toLowerCase().includes(searchTerm) ||
+                invoice.tipoDocumento.toLowerCase().includes(searchTerm)
+            );
+            renderInvoices(filtered);
         }
 
         // Generar PDF
-        async function generatePdf() {
-            const invoiceId = document.getElementById('invoiceId').value;
-            if (!invoiceId) {
-                showAlert('Por favor, guarda la factura antes de generar el PDF.', 'warning');
+        function generatePdf(invoiceId) {
+            let invoiceToPrint;
+            if (invoiceId) {
+                invoiceToPrint = invoices.find(inv => inv.id === invoiceId);
+            } else {
+                // Si no se proporciona ID, toma los datos del formulario actual
+                const form = document.getElementById('invoiceForm');
+                 // Validar que al menos un ítem haya sido añadido
+                if (document.querySelectorAll('.item-row').length === 0) {
+                    showAlert('Debe añadir al menos un ítem a la factura antes de generar el PDF.', 'error');
+                    return;
+                }
+
+                invoiceToPrint = {
+                    id: Date.now(),
+                    tipoDocumento: form.tipoDocumento.value,
+                    fechaFactura: form.fechaFactura.value,
+                    numeroFactura: form.numeroFactura.value,
+                    cliente: {
+                        nombre: form.clienteNombre.value.trim(),
+                        direccion: form.clienteDireccion.value.trim(),
+                        nit: form.clienteNIT.value.trim(),
+                        solicitante: form.solicitante.value.trim(),
+                        correo: form.correo.value.trim(),
+                        telefono: form.telefono.value.trim()
+                    },
+                    items: [],
+                    impuesto: parseFloat(form.impuesto.value) || 0,
+                    descuento: parseFloat(form.descuento.value) || 0,
+                    subtotal: parseFloat(document.getElementById('subtotalDisplay').textContent.replace('$', '')),
+                    total: parseFloat(document.getElementById('totalDisplay').textContent.replace('$', '')),
+                    notas: form.notas.value.trim(),
+                    imagenes: [...selectedImages] // Usar las imágenes cargadas en el formulario
+                };
+
+                document.querySelectorAll('.item-row').forEach(row => {
+                    invoiceToPrint.items.push({
+                        descripcion: row.querySelector('.item-descripcion').value.trim(),
+                        descripcionAdicional: row.querySelector('.item-descripcion-adicional').value.trim(),
+                        cantidad: parseFloat(row.querySelector('.item-cantidad').value) || 0,
+                        precioUnitario: parseFloat(row.querySelector('.item-precio-unitario').value) || 0
+                    });
+                });
+            }
+
+            if (!invoiceToPrint) {
+                showAlert('No se encontró la factura para generar el PDF.', 'error');
                 return;
             }
-            generatePdfForInvoice(invoiceId);
-        }
 
-        async function generatePdfForInvoice(invoiceId) {
-            const invoice = invoices.find(inv => inv.id === invoiceId);
-            if (!invoice) {
-                showAlert('Error: Factura no encontrada para generar PDF.', 'error');
-                return;
+            // Llenar el template del PDF con los datos de la factura
+            document.getElementById('pdfHeaderCompanyName').textContent = settings.companyName || 'OSCAR OSPINO | CRIOSER SOLUTIONS';
+            document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress || 'Dirección de la Empresa';
+            document.getElementById('pdfCompanyPhone').textContent = `Teléfono: ${settings.companyPhone || '(XXX) XXX-XXXX'}`;
+            document.getElementById('pdfCompanyEmail').textContent = `Email: ${settings.companyEmail || 'tu_correo@empresa.com'}`;
+            document.getElementById('pdfCompanyNIT').textContent = `NIT: ${settings.companyNIT || 'XXX.XXX.XXX-X'}`;
+            
+            const pdfCompanyLogo = document.getElementById('pdfCompanyLogo');
+            if (settings.companyLogoBase64) {
+                pdfCompanyLogo.src = settings.companyLogoBase64;
+                pdfCompanyLogo.style.display = 'block';
+            } else {
+                pdfCompanyLogo.style.display = 'none'; // Ocultar si no hay logo
             }
 
-            // Actualizar datos del PDF con la configuración de la empresa
-            document.getElementById('pdfCompanyName').textContent = settings.companyName;
-            document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress;
-            document.getElementById('pdfCompanyPhone').textContent = settings.companyPhone;
-            document.getElementById('pdfCompanyEmail').textContent = settings.companyEmail;
-            document.getElementById('pdfCompanyNIT').textContent = settings.companyNIT;
-            document.getElementById('pdfCompanyLogo').src = settings.companyLogo || 'LogoCompleto.png';
+            document.getElementById('pdfClienteNombre').textContent = invoiceToPrint.cliente.nombre;
+            document.getElementById('pdfClienteDireccion').textContent = invoiceToPrint.cliente.direccion;
+            document.getElementById('pdfClienteNIT').textContent = invoiceToPrint.cliente.nit;
+            document.getElementById('pdfSolicitante').textContent = invoiceToPrint.cliente.solicitante;
+            document.getElementById('pdfCorreo').textContent = invoiceToPrint.cliente.correo;
+            document.getElementById('pdfTelefono').textContent = invoiceToPrint.cliente.telefono;
 
-
-            document.getElementById('pdfTipoDocumento').textContent = invoice.tipoDocumento;
-            document.getElementById('pdfNumeroFactura').textContent = invoice.numeroFactura;
-            document.getElementById('pdfFechaFactura').textContent = invoice.fechaFactura; // Ya está en formato YYYY-MM-DD
-
-            document.getElementById('pdfClienteNombre').textContent = invoice.clienteNombre;
-            document.getElementById('pdfClienteDireccion').textContent = invoice.clienteDireccion;
-            document.getElementById('pdfClienteNIT').textContent = invoice.clienteNIT;
-            document.getElementById('pdfSolicitante').textContent = invoice.solicitante;
-            document.getElementById('pdfCorreo').textContent = invoice.correo;
-            document.getElementById('pdfTelefono').textContent = invoice.telefono;
+            document.getElementById('pdfTipoDocumento').textContent = invoiceToPrint.tipoDocumento;
+            document.getElementById('pdfNumeroFactura').textContent = invoiceToPrint.numeroFactura;
+            document.getElementById('pdfFechaFactura').textContent = invoiceToPrint.fechaFactura;
+            document.getElementById('pdfCompanyName').textContent = settings.companyName || 'OSCAR OSPINO | CRIOSER SOLUTIONS'; // Emitido por la misma empresa
 
             const pdfItemsTableBody = document.getElementById('pdfItemsTableBody');
             pdfItemsTableBody.innerHTML = '';
-            invoice.items.forEach(item => {
+            invoiceToPrint.items.forEach(item => {
                 const row = pdfItemsTableBody.insertRow();
                 row.innerHTML = `
-                    <td>${item.description}</td>
-                    <td>${item.additionalDescription}</td>
-                    <td class="text-right">${item.quantity}</td>
-                    <td class="text-right">$${parseFloat(item.unitPrice).toFixed(2)}</td>
-                    <td class="text-right">$${(item.quantity * item.unitPrice).toFixed(2)}</td>
+                    <td>${item.descripcion}</td>
+                    <td>${item.descripcionAdicional}</td>
+                    <td class="text-right">${item.cantidad}</td>
+                    <td class="text-right">$${item.precioUnitario.toFixed(2)}</td>
+                    <td class="text-right">$${(item.cantidad * item.precioUnitario).toFixed(2)}</td>
                 `;
             });
 
-            document.getElementById('pdfSubtotal').textContent = `$${invoice.subtotal}`;
-            document.getElementById('pdfImpuestoPct').textContent = parseFloat(invoice.impuesto);
-            document.getElementById('pdfImpuestoVal').textContent = `$${invoice.impuestoVal}`;
-            document.getElementById('pdfDescuento').textContent = `$${invoice.descuento}`;
-            document.getElementById('pdfTotal').textContent = `$${invoice.total}`;
-
-            const pdfNotesDiv = document.getElementById('pdfNotes');
-            const pdfNotesContent = document.getElementById('pdfNotesContent');
-            if (invoice.notas) {
-                pdfNotesContent.textContent = invoice.notas;
-                pdfNotesDiv.style.display = 'block';
-            } else {
-                pdfNotesContent.textContent = '';
-                pdfNotesDiv.style.display = 'none';
-            }
-
-            // Manejo de imágenes en el PDF
-            const pdfImagesContainer = document.getElementById('pdfImagesContainer');
-            pdfImagesContainer.innerHTML = ''; // Limpiar imágenes anteriores
-            if (invoice.images && invoice.images.some(img => img !== '')) {
-                invoice.images.forEach((imgBase64, index) => {
-                    if (imgBase64) {
-                        const img = document.createElement('img');
-                        img.src = imgBase64;
-                        img.alt = `Imagen ${index + 1}`;
-                        pdfImagesContainer.appendChild(img);
-                    }
-                });
-                pdfImagesContainer.style.display = 'grid'; // Mostrar si hay imágenes
-            } else {
-                pdfImagesContainer.style.display = 'none';
-            }
-
-            document.getElementById('pdfTipoDocumentoFooter').textContent = invoice.tipoDocumento.toLowerCase();
+            document.getElementById('pdfSubtotal').textContent = `$${invoiceToPrint.subtotal.toFixed(2)}`;
+            document.getElementById('pdfImpuestoPct').textContent = invoiceToPrint.impuesto;
+            const impuestoVal = invoiceToPrint.subtotal * (invoiceToPrint.impuesto / 100);
+            document.getElementById('pdfImpuestoVal').textContent = `$${impuestoVal.toFixed(2)}`;
+            document.getElementById('pdfDescuentoVal').textContent = `$${invoiceToPrint.descuento.toFixed(2)}`;
+            document.getElementById('pdfTotal').textContent = `$${invoiceToPrint.total.toFixed(2)}`;
+            document.getElementById('pdfNotas').textContent = invoiceToPrint.notas || 'N/A';
             document.getElementById('pdfCurrentYear').textContent = new Date().getFullYear();
+            document.getElementById('pdfTipoDocumentoFooter').textContent = invoiceToPrint.tipoDocumento.toLowerCase();
 
-            const pdfTemplate = document.getElementById('pdfTemplate');
-            pdfTemplate.style.display = 'flex'; // Mostrar la plantilla para html2canvas
+            // Renderizar imágenes en el PDF
+            const pdfImagesContainer = document.getElementById('pdfImagesContainer');
+            pdfImagesContainer.innerHTML = '';
+            if (invoiceToPrint.imagenes && invoiceToPrint.imagenes.length > 0) {
+                document.getElementById('pdfImagesTitle').style.display = 'block';
+                invoiceToPrint.imagenes.forEach(imgBase64 => {
+                    const img = document.createElement('img');
+                    img.src = imgBase64;
+                    pdfImagesContainer.appendChild(img);
+                });
+            } else {
+                document.getElementById('pdfImagesTitle').style.display = 'none';
+            }
 
-            showAlert('Generando PDF...', 'info', 2000);
+            // Ocultar la interfaz principal y mostrar el template del PDF para imprimir
+            document.body.classList.add('print-mode'); // Clase para CSS @media print
+            const pdfTemplate = document.querySelector('.pdf-template');
+            pdfTemplate.style.display = 'flex'; // Hacer visible para la captura
 
-            // Retraso para asegurar que el DOM se haya actualizado completamente
-            setTimeout(async () => {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('p', 'pt', 'letter'); // 'letter' para tamaño Carta
+            // Usar html2canvas y jsPDF para generar el PDF
+            window.jsPDF = window.jspdf.jsPDF;
+            html2canvas(pdfTemplate, {
+                scale: 2, // Aumentar escala para mejor calidad
+                useCORS: true, // Importante para cargar imágenes externas si las hubiera
+                allowTaint: true // Permite la carga de imágenes con "tainted canvases"
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/jpeg', 1.0); // Convertir a JPEG para reducir tamaño si es necesario
+                const pdf = new jsPDF('p', 'pt', 'letter'); // 'p' for portrait, 'pt' for points, 'letter' size (8.5 x 11 inches)
+                
+                const imgWidth = 612; // PDF page width (letter in points)
+                const pageHeight = 792; // PDF page height (letter in points)
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
 
-                // Define opciones de html2canvas para mejor calidad y escala
-                const options = {
-                    scale: 3, // Mayor escala para mejor resolución
-                    useCORS: true, // Importante si las imágenes son de URLs externas o Base64
-                    logging: false // Desactivar logs de html2canvas
-                };
+                let position = 0;
 
-                // Clonar el template para evitar problemas de estilos temporales en el original
-                const clonedPdfTemplate = pdfTemplate.cloneNode(true);
-                clonedPdfTemplate.style.display = 'flex'; // Asegurarse de que el clon sea visible
-                clonedPdfTemplate.style.position = 'absolute';
-                clonedPdfTemplate.style.left = '-9999px'; // Mover fuera de la vista
-                document.body.appendChild(clonedPdfTemplate);
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
 
-                try {
-                    const canvas = await html2canvas(clonedPdfTemplate, options);
-                    const imgData = canvas.toDataURL('image/jpeg', 0.9); // Calidad 0.9 para JPEG
-
-                    const imgWidth = 612; // Ancho de la página Carta en pt (8.5 * 72)
-                    const pageHeight = 792; // Alto de la página Carta en pt (11 * 72)
-                    const imgHeight = canvas.height * imgWidth / canvas.width;
-                    let heightLeft = imgHeight;
-
-                    let position = 0;
-
-                    doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                     heightLeft -= pageHeight;
-
-                    while (heightLeft >= 0) {
-                        position = heightLeft - imgHeight;
-                        doc.addPage();
-                        doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-                    }
-
-                    doc.save(`${invoice.tipoDocumento.replace(/\s/g, '_')}_${invoice.numeroFactura}.pdf`);
-                    showAlert('PDF generado exitosamente.', 'success');
-                } catch (error) {
-                    console.error('Error al generar PDF:', error);
-                    showAlert('Error al generar el PDF. Por favor, inténtelo de nuevo.', 'error');
-                } finally {
-                    pdfTemplate.style.display = 'none'; // Ocultar la plantilla de nuevo
-                    if (clonedPdfTemplate.parentNode) {
-                        clonedPdfTemplate.parentNode.removeChild(clonedPdfTemplate); // Eliminar el clon
-                    }
                 }
-            }, 100); // Pequeño retraso
+
+                pdf.save(`${invoiceToPrint.numeroFactura}.pdf`);
+
+                // Ocultar el template del PDF y mostrar la interfaz principal
+                pdfTemplate.style.display = 'none';
+                document.body.classList.remove('print-mode');
+            }).catch(error => {
+                showAlert('Error al generar el PDF: ' + error.message, 'error');
+                console.error("Error generating PDF:", error);
+                pdfTemplate.style.display = 'none';
+                document.body.classList.remove('print-mode');
+            });
+        }
+
+        // Manejar la carga de imágenes para la factura
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            if (files.length + selectedImages.length > MAX_IMAGES) {
+                showAlert(`Solo puedes subir un máximo de ${MAX_IMAGES} imágenes.`, 'warning');
+                // Clear the input to allow user to re-select
+                event.target.value = '';
+                return;
+            }
+
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        selectedImages.push(e.target.result); // Almacenar Base64
+                        renderImagePreviews();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    showAlert('Solo se permiten archivos de imagen.', 'error');
+                }
+            });
+            event.target.value = ''; // Clear the input after processing
+        }
+
+        function renderImagePreviews() {
+            imagePreviewsContainer.innerHTML = '';
+            selectedImages.forEach((imgBase64, index) => {
+                const previewItem = document.createElement('div');
+                previewItem.classList.add('image-preview-item');
+                previewItem.innerHTML = `
+                    <img src="${imgBase64}" alt="Preview ${index}">
+                    <button type="button" class="remove-image-btn" onclick="removeImage(${index})"><i class="fas fa-times"></i></button>
+                `;
+                imagePreviewsContainer.appendChild(previewItem);
+            });
+        }
+
+        function removeImage(indexToRemove) {
+            selectedImages = selectedImages.filter((_, index) => index !== indexToRemove);
+            renderImagePreviews();
+            showAlert('Imagen eliminada.', 'info');
+        }
+
+        // Actualizar la información de la empresa en el encabezado del PDF (cuando se guardan ajustes)
+        function updatePdfHeaderInfo() {
+            document.getElementById('pdfHeaderCompanyName').textContent = settings.companyName || 'Nombre de tu Empresa';
+            document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress || 'Dirección de tu Empresa';
+            document.getElementById('pdfCompanyPhone').textContent = `Teléfono: ${settings.companyPhone || '(XXX) XXX-XXXX'}`;
+            document.getElementById('pdfCompanyEmail').textContent = `Email: ${settings.companyEmail || 'tu_correo@empresa.com'}`;
+            document.getElementById('pdfCompanyNIT').textContent = `NIT: ${settings.companyNIT || 'XXX.XXX.XXX-X'}`;
+            const pdfCompanyLogo = document.getElementById('pdfCompanyLogo');
+            if (settings.companyLogoBase64) {
+                pdfCompanyLogo.src = settings.companyLogoBase64;
+                pdfCompanyLogo.style.display = 'block';
+            } else {
+                pdfCompanyLogo.style.display = 'none';
+            }
         }
 
 
-        // Inicialización
+        // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
-            loadInvoices();
-            loadSettings(); // Cargar la configuración al inicio
-            renderInvoicesTable();
-            updateSummaryCards();
-            renderLatestInvoices(); // Renderizar últimas facturas al cargar
-            addItem(); // Añadir un ítem por defecto al formulario de creación
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            document.getElementById('pdfCurrentYear').textContent = new Date().getFullYear();
+            loadData();
+            renderInvoices();
             generateInvoiceNumber(); // Generar el primer número de factura al cargar
+            document.getElementById('fechaFactura').valueAsDate = new Date(); // Establecer la fecha actual
+            document.getElementById('currentYear').textContent = new Date().getFullYear(); // Actualizar año en el footer
+            // Set initial company name for the PDF template if available
+            updatePdfHeaderInfo();
         });
-
     </script>
 </body>
 </html>
