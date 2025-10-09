@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1751,6 +1752,7 @@
                         <button class="btn btn-info btn-sm" onclick="editInvoice(${invoice.id})"><i class="fas fa-edit"></i> Editar</button>
                         <button class="btn btn-danger btn-sm" onclick="confirmDeleteInvoice(${invoice.id})"><i class="fas fa-trash"></i> Eliminar</button>
                         <button class="btn btn-success btn-sm" onclick="generatePdf(${invoice.id})"><i class="fas fa-file-pdf"></i> PDF</button>
+                        <button class="btn btn-secondary btn-sm" onclick="duplicateInvoice(${invoice.id})"><i class="fas fa-copy"></i> Duplicar</button>
                     </td>
                 `;
             });
@@ -1814,6 +1816,44 @@
 
                 calculateTotal();
                 showSection('createInvoiceSection'); // Volver a la sección de crear factura para editar
+            }
+        }
+
+        // Duplicar factura
+        function duplicateInvoice(id) {
+            const original = invoices.find(inv => inv.id === id);
+            if (original) {
+                showSection('createInvoiceSection');
+                resetForm(); // Resetea el formulario, establece fecha actual y nuevo número
+
+                // Establecer tipo de documento y generar nuevo número
+                document.getElementById('tipoDocumento').value = original.tipoDocumento;
+                generateInvoiceNumber();
+
+                // Llenar datos del cliente
+                document.getElementById('clienteNombre').value = original.cliente.nombre;
+                document.getElementById('clienteDireccion').value = original.cliente.direccion;
+                document.getElementById('clienteNIT').value = original.cliente.nit;
+                document.getElementById('solicitante').value = original.cliente.solicitante;
+                document.getElementById('correo').value = original.cliente.correo;
+                document.getElementById('telefono').value = original.cliente.telefono;
+
+                // Añadir ítems
+                original.items.forEach(item => addItem(item));
+
+                // Cargar imágenes
+                selectedImages = [...original.imagenes];
+                renderImagePreviews();
+
+                // Impuesto, descuento, notas
+                document.getElementById('impuesto').value = original.impuesto;
+                document.getElementById('descuento').value = original.descuento;
+                document.getElementById('notas').value = original.notas;
+
+                // Estado a pendiente para el nuevo documento
+                document.getElementById('estadoFactura').value = 'pendiente';
+
+                calculateTotal();
             }
         }
 
@@ -1976,6 +2016,7 @@
             document.getElementById('pdfNotas').textContent = invoiceToPrint.notas || 'N/A';
             document.getElementById('pdfCurrentYear').textContent = new Date().getFullYear();
             document.getElementById('pdfTipoDocumentoFooter').textContent = invoiceToPrint.tipoDocumento.toLowerCase();
+
             // Renderizar imágenes en el PDF
             const pdfImagesContainer = document.getElementById('pdfImagesContainer');
             pdfImagesContainer.innerHTML = '';
@@ -2027,7 +2068,6 @@
                 // Ocultar el template del PDF y mostrar la interfaz principal
                 pdfTemplate.style.display = 'none';
                 document.body.classList.remove('print-mode');
-                showAlert('PDF generado exitosamente.', 'success'); // Notificar éxito
             }).catch(error => {
                 showAlert('Error al generar el PDF: ' + error.message, 'error');
                 console.error("Error generating PDF:", error);
@@ -2110,3 +2150,4 @@
     </script>
 </body>
 </html>
+```
