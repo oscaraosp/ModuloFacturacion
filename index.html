@@ -528,7 +528,7 @@
         .pdf-items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30pt;
+            margin-bottom: 15pt; /* Reducido para acercar a los totales */
         }
 
         .pdf-items-table th, .pdf-items-table td {
@@ -558,8 +558,14 @@
             justify-content: flex-end;
             font-size: 11pt;
             font-weight: 700;
-            margin-top: 20pt;
+            margin-top: 5pt; /* Ajustado */
+            border-top: 1pt dashed #ccc; /* Cambiado para mejor visual */
+            padding-top: 5pt; /* Ajustado */
+        }
+
+        .pdf-total-section:first-child { /* The Subtotal one */
             border-top: 2pt solid var(--primary-color);
+            margin-top: 20pt;
             padding-top: 10pt;
         }
 
@@ -570,7 +576,8 @@
         }
 
         .pdf-notes {
-            margin-top: 30pt;
+            margin-top: 20pt; /* Ajustado */
+            margin-bottom: 20pt;
             font-size: 9pt;
             line-height: 1.5;
             padding: 10pt;
@@ -589,7 +596,7 @@
         .pdf-images-section {
             margin-top: 30pt;
             padding-top: 15pt;
-            border-top: 1pt solid #eee;
+            /* No border-top here, as it's the start of a new page */
         }
 
         .pdf-images-section h4 {
@@ -644,7 +651,7 @@
             }
         }
         
-        /* MODIFICACIÓN 6: Estilos para forzar la segunda página en el PDF */
+        /* MODIFICACIÓN 6/7: Estilos para forzar la segunda página en el PDF */
         .pdf-page-break-container {
             page-break-before: always;
             break-before: page;
@@ -1306,35 +1313,35 @@
             </tbody>
         </table>
 
+        <div class="pdf-total-section">
+            <div style="font-weight: 400; font-size: 10pt;">
+                <span>Subtotal:</span>
+                <span id="pdfSubtotal"></span>
+            </div>
+        </div>
+        <div class="pdf-total-section" style="margin-top: 5pt; padding-top: 0; border-top: none;">
+            <div style="font-weight: 400; font-size: 10pt;">
+                <span>Impuesto (<span id="pdfImpuestoPct">0</span>%):</span>
+                <span id="pdfImpuestoVal"></span>
+            </div>
+        </div>
+        <div class="pdf-total-section" style="margin-top: 5pt; padding-top: 0; border-top: none;">
+            <div style="font-weight: 400; font-size: 10pt;">
+                <span>Descuento:</span>
+                <span id="pdfDescuentoVal"></span>
+            </div>
+        </div>
+        <div class="pdf-total-section" style="margin-top: 10pt;">
+            <div>
+                <span>TOTAL:</span>
+                <span id="pdfTotal"></span>
+            </div>
+        </div>
+        <div class="pdf-notes">
+            <h4>Notas / Observaciones</h4>
+            <p id="pdfNotas"></p>
+        </div>
         <div class="pdf-page-break-container">
-            <div class="pdf-total-section">
-                <div style="font-weight: 400; font-size: 10pt;">
-                    <span>Subtotal:</span>
-                    <span id="pdfSubtotal"></span>
-                </div>
-            </div>
-            <div class="pdf-total-section" style="margin-top: 5pt; padding-top: 0; border-top: none;">
-                <div style="font-weight: 400; font-size: 10pt;">
-                    <span>Impuesto (<span id="pdfImpuestoPct">0</span>%):</span>
-                    <span id="pdfImpuestoVal"></span>
-                </div>
-            </div>
-            <div class="pdf-total-section" style="margin-top: 5pt; padding-top: 0; border-top: none;">
-                <div style="font-weight: 400; font-size: 10pt;">
-                    <span>Descuento:</span>
-                    <span id="pdfDescuentoVal"></span>
-                </div>
-            </div>
-            <div class="pdf-total-section" style="margin-top: 10pt;">
-                <div>
-                    <span>TOTAL:</span>
-                    <span id="pdfTotal"></span>
-                </div>
-            </div>
-            <div class="pdf-notes">
-                <h4>Notas / Observaciones</h4>
-                <p id="pdfNotas"></p>
-            </div>
             <div class="pdf-images-section">
                 <h4 id="pdfImagesTitle">Imágenes del Trabajo</h4>
                 <div id="pdfImagesContainer" class="pdf-images-container">
@@ -2084,8 +2091,8 @@
         // Función para manejar la carga de imágenes en el formulario
         function handleImageUpload(event) {
             const files = event.target.files;
-            if (files.length + selectedImages.length > 5) {
-                showAlert('Solo se permiten un máximo de 5 imágenes.', 'warning');
+            if (files.length + selectedImages.length > 6) {
+                showAlert('Solo se permiten un máximo de 6 imágenes.', 'warning');
                 event.target.value = ''; // Limpiar la selección
                 return;
             }
@@ -2248,13 +2255,17 @@
             // Imágenes
             const pdfImagesContainer = document.getElementById('pdfImagesContainer');
             pdfImagesContainer.innerHTML = '';
+            const pdfImagesSection = document.getElementById('pdfImagesTitle');
+            
             if (invoiceToPrint.imagenes && invoiceToPrint.imagenes.length > 0) {
-                document.getElementById('pdfImagesTitle').style.display = 'block';
+                pdfImagesSection.style.display = 'block';
                 invoiceToPrint.imagenes.forEach((imgBase64, index) => {
                     pdfImagesContainer.innerHTML += `<img src="${imgBase64}" alt="Imagen del trabajo ${index + 1}">`;
                 });
             } else {
-                document.getElementById('pdfImagesTitle').style.display = 'none';
+                pdfImagesSection.style.display = 'none';
+                // Ocultar el contenedor de salto de página si no hay imágenes, para que no haya una página en blanco.
+                document.querySelector('.pdf-page-break-container').style.display = 'none'; 
             }
 
             // Pie de página
@@ -2266,39 +2277,60 @@
             
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'pt', 'letter');
-            const pageHeight = pdf.internal.pageSize.getHeight();
+            const pageHeightPt = pdf.internal.pageSize.getHeight(); // Altura de la página en puntos (pt)
 
+            // --- LÓGICA DE SALTO DE PÁGINA FORZADO ---
+            const templateRect = pdfTemplate.getBoundingClientRect();
+            const breakElement = document.querySelector('.pdf-page-break-container');
+            
+            let firstPageContentHeightPx = templateRect.height; // Valor por defecto
+
+            if (breakElement.style.display !== 'none') {
+                const breakRect = breakElement.getBoundingClientRect();
+                // Altura del contenido de la primera página ANTES del salto, en píxeles.
+                firstPageContentHeightPx = breakRect.top - templateRect.top; 
+            }
+            
             html2canvas(pdfTemplate, { 
                 scale: 2, // Aumentar la escala para mejor calidad
                 logging: false, 
                 useCORS: true 
             }).then(canvas => {
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const imgWidth = 612; // Ancho de la carta
-                const imgHeight = canvas.height * imgWidth / canvas.width;
+                const imgWidth = 612; // Ancho de la carta (pt)
+                const pxPerPt = canvas.width / imgWidth; // Factor de conversión de Píxeles a Puntos (escala 2)
                 
-                let heightLeft = imgHeight;
-                let position = 0;
+                // Altura total de la imagen en puntos
+                const imgHeightPt = canvas.height / pxPerPt;
+                
+                // Calcular el punto de quiebre forzado en puntos (pt)
+                const breakPointPt = firstPageContentHeightPx / pxPerPt; 
+                
+                let position = 0; // Posición de corte en el eje Y del canvas (en pt)
 
-                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                // Manejar múltiples páginas
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
+                // Imprimir la primera página (contenidos hasta el punto de quiebre forzado)
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeightPt);
+                
+                // --- Lógica del Salto de Página ---
+                // Si el salto se aplicó (el elemento de quiebre no se ocultó)
+                if (breakElement.style.display !== 'none' && firstPageContentHeightPx > 0) {
                     pdf.addPage();
-                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
+                    
+                    // Calcular la nueva posición de la imagen para empezar justo después del punto de quiebre
+                    const secondPageStartPos = -(breakPointPt);
+                    
+                    // Imprimir el resto del canvas en la nueva página
+                    pdf.addImage(imgData, 'JPEG', 0, secondPageStartPos, imgWidth, imgHeightPt);
                 }
-
+                
                 pdf.save(`${invoiceToPrint.numeroFactura}.pdf`); 
-
-                // Ocultar el template del PDF y mostrar la interfaz principal 
+                
+                // Limpiar el estado de visualización temporal
                 pdfTemplate.style.display = 'none';
                 document.body.classList.remove('print-mode'); 
-
+                document.querySelector('.pdf-page-break-container').style.display = 'block'; // Asegurar que se muestre para la próxima vez
+                
                 // --- MODIFICACIÓN 5: Redirección a WhatsApp --- 
-                // Redirigir si existe el teléfono, sin importar si faltan otros datos
                 if (invoiceToPrint.cliente.telefono) { 
                     const clientName = invoiceToPrint.cliente.nombre || 'Cliente';
                     const invoiceNumber = invoiceToPrint.numeroFactura || 'el documento';
