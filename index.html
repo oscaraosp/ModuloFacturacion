@@ -448,7 +448,8 @@
         /* Template de PDF (oculto por defecto) */
         .pdf-template {
             width: 612pt;
-            padding: 40pt;
+            min-height: 936pt;
+            padding: 50pt;
             box-sizing: border-box;
             background: white;
             font-family: 'Poppins', sans-serif;
@@ -614,7 +615,7 @@
         }
 
         .pdf-images-container img {
-            max-width: 45%; /* Adjust based on desired layout, e.g., two images per row */
+            max-width: 40%; /* Adjust based on desired layout, e.g., two images per row */
             height: auto;
             border: 1pt solid #ddd;
             padding: 5pt;
@@ -1050,12 +1051,24 @@
     </style>
 </head>
 <body>
+    
+    <div class="toast-container"></div>
+
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div id="customAlertBox" class="custom-alert-box">
+            <h3 id="customAlertTitle"></h3>
+            <p id="customAlertMessage"></p>
+            <div id="customAlertButtons" class="alert-buttons">
+                </div>
+        </div>
+    </div>
+
     <div class="sidebar">
         <img src="LogoCompleto.png" alt="Logo OSCAR OSPINO | CRIOSER SOLUTIONS" class="logo">
         <ul>
             <li><a href="#" onclick="showSection('homeSection')" class="active"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="#" onclick="showSection('createInvoiceSection')"><i class="fas fa-file-invoice"></i> Crear Factura</a></li>
-            <li><a href="#" onclick="showSection('manageInvoicesSection')"><i class="fas fa-list-alt"></i> Gestionar Facturas</a></li>
+            <li><a href="#" onclick="showSection('createInvoiceSection')"><i class="fas fa-file-invoice"></i> Crear Documento</a></li>
+            <li><a href="#" onclick="showSection('manageInvoicesSection')"><i class="fas fa-list-alt"></i> Gestionar Documentos</a></li>
             <li><a href="#" onclick="showSection('settingsSection')"><i class="fas fa-cogs"></i> Ajustes</a></li>
         </ul>
     </div>
@@ -1070,26 +1083,27 @@
             <div class="summary-cards">
                 <div class="summary-card blue">
                     <i class="fas fa-file-invoice-dollar"></i>
-                    <h3>Facturas Totales</h3>
+                    <h3>Documentos Totales</h3>
                     <p id="totalInvoices">0</p>
                 </div>
                 <div class="summary-card green">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Ganancias Totales</h3>
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Total Ganado (Este Año)</h3>
                     <p id="totalEarnings">$0.00</p>
                 </div>
                 <div class="summary-card purple">
                     <i class="fas fa-calendar-alt"></i>
-                    <h3>Facturas Este Año</h3>
+                    <h3>Documentos (Este Año)</h3>
                     <p id="invoicesThisYear">0</p>
                 </div>
             </div>
-            <h3>Últimas Facturas</h3>
+
+            <h2>Documentos Recientes</h2>
             <div class="invoice-table-container">
                 <table class="invoice-table">
                     <thead>
                         <tr>
-                            <th># Factura</th>
+                            <th>No. Documento</th>
                             <th>Cliente</th>
                             <th>Fecha</th>
                             <th>Total</th>
@@ -1097,63 +1111,79 @@
                         </tr>
                     </thead>
                     <tbody id="latestInvoicesTableBody">
-                        <tr><td colspan="5" style="text-align: center;">No hay facturas recientes.</td></tr>
+                        <tr><td colspan="5" style="text-align: center;">Cargando...</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
         <section id="createInvoiceSection" class="section">
-            <h2>Crear Nueva Factura</h2>
+            <h2 id="invoiceFormTitle">Crear Nuevo Documento</h2>
             <form id="invoiceForm">
                 <input type="hidden" id="invoiceId">
-                <div class="form-group">
-                    <label for="tipoDocumento">Tipo de Documento:</label>
-                    <select id="tipoDocumento" name="tipoDocumento" onchange="generateInvoiceNumber()">
-                        <option value="Factura de Servicio / Venta">Factura de Servicio / Venta</option>
-                        <option value="Cotización">Cotización</option>
-                        <option value="Orden de Servicio">Orden de Servicio</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="fechaFactura">Fecha:</label>
-                    <input type="date" id="fechaFactura" name="fechaFactura" required>
-                </div>
-                <div class="form-group">
-                    <label for="numeroFactura">Número de Documento:</label>
-                    <input type="text" id="numeroFactura" name="numeroFactura" required readonly>
-                </div>
-                <div class="form-group">
-                    <h3>Datos del Cliente</h3>
-                    <label for="clienteNombre">Nombre del Cliente / Empresa:</label>
-                    <input type="text" id="clienteNombre" name="clienteNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="clienteDireccion">Dirección:</label>
-                    <input type="text" id="clienteDireccion" name="clienteDireccion">
-                </div>
-                <div class="form-group">
-                    <label for="clienteNIT">NIT / C.C.:</label>
-                    <input type="text" id="clienteNIT" name="clienteNIT">
-                </div>
-                <div class="form-group">
-                    <label for="solicitante">Solicitante:</label>
-                    <input type="text" id="solicitante" name="solicitante">
-                </div>
-                <div class="form-group">
-                    <label for="correo">Correo Electrónico:</label>
-                    <input type="email" id="correo" name="correo">
-                </div>
-                <div class="form-group">
-                    <label for="telefono">Teléfono:</label>
-                    <input type="text" id="telefono" name="telefono">
+
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="tipoDocumento">Tipo de Documento:</label>
+                        <select id="tipoDocumento" name="tipoDocumento" onchange="generateInvoiceNumber()">
+                            <option value="FAC">Factura de Servicio / Venta</option>
+                            <option value="COT">Cotización</option>
+                            <option value="ORD">Orden de Trabajo</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="numeroFactura">No. Documento:</label>
+                        <input type="text" id="numeroFactura" name="numeroFactura" required readonly>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="fechaFactura">Fecha:</label>
+                        <input type="date" id="fechaFactura" name="fechaFactura" value="" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="estadoFactura">Estado:</label>
+                        <select id="estadoFactura" name="estadoFactura" required>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="enproceso">En Proceso</option>
+                            <option value="realizado">Realizado</option>
+                        </select>
+                    </div>
                 </div>
 
-                <h3>Items de Factura</h3>
+                <h3>Datos del Cliente/Destinatario</h3>
+                <div class="form-group">
+                    <label for="clienteNombre">Nombre / Empresa:</label>
+                    <input type="text" id="clienteNombre" name="clienteNombre" required>
+                </div>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="clienteDireccion">Dirección:</label>
+                        <input type="text" id="clienteDireccion" name="clienteDireccion">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="clienteNIT">NIT / C.C.:</label>
+                        <input type="text" id="clienteNIT" name="clienteNIT">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="solicitante">Solicitante / Contacto:</label>
+                        <input type="text" id="solicitante" name="solicitante">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="correo">Correo Electrónico:</label>
+                        <input type="text" id="correo" name="correo">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="telefono">Teléfono / WhatsApp:</label>
+                        <input type="text" id="telefono" name="telefono">
+                    </div>
+                </div>
+                
+                <h3>Ítems del Documento</h3>
                 <div class="item-list" id="itemsContainer">
                     </div>
                 <button type="button" class="add-item-btn" onclick="addItem()"><i class="fas fa-plus"></i> Añadir Ítem</button>
-
+                
                 <div class="total-section">
                     <div style="display: flex; justify-content: flex-end; align-items: center; flex-direction: column;">
                         <div style="display: flex; justify-content: flex-end; align-items: center;">
@@ -1183,37 +1213,54 @@
 
                 <h3>Imágenes del Trabajo (Opcional)</h3>
                 <div class="form-group">
-                    <label for="imageUpload">Seleccionar Imágenes:</label>
+                    <label for="imageUpload">Seleccionar Imágenes (Máx. 10):</label>
                     <input type="file" id="imageUpload" name="imageUpload" accept="image/*" multiple onchange="handleImageUpload(event)">
-                    <div id="imagePreviewsContainer" class="image-preview-container">
-                        </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="estadoFactura">Estado del Documento:</label>
-                    <select id="estadoFactura" name="estadoFactura" required>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="realizado">Realizado</option>
-                        <option value="enproceso">En Proceso</option>
-                    </select>
-                </div>
+                <div class="image-preview-container" id="imagePreviewsContainer">
+                    </div>
 
                 <div class="button-group">
-                    <button type="submit" class="btn btn-primary">Guardar Factura</button>
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="generatePdf()">Generar PDF</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()"><i class="fas fa-eraser"></i> Nuevo Documento</button>
+                    <button type="button" class="btn btn-primary" onclick="generatePdf()"><i class="fas fa-file-pdf"></i> Generar PDF</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Guardar Documento</button>
                 </div>
             </form>
         </section>
 
         <section id="manageInvoicesSection" class="section">
-            <h2>Gestionar Facturas</h2>
-            <input type="text" id="searchInvoice" placeholder="Buscar por cliente, # factura..." onkeyup="filterInvoices()">
+            <h2>Gestionar Documentos</h2>
+            
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="filterStatus">Filtrar por Estado:</label>
+                    <select id="filterStatus" onchange="renderInvoices()">
+                        <option value="all">Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="enproceso">En Proceso</option>
+                        <option value="realizado">Realizado</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="filterType">Filtrar por Tipo:</label>
+                    <select id="filterType" onchange="renderInvoices()">
+                        <option value="all">Todos</option>
+                        <option value="FAC">Factura</option>
+                        <option value="COT">Cotización</option>
+                        <option value="ORD">Orden de Trabajo</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="searchQuery">Buscar (No. Doc/Cliente):</label>
+                    <input type="text" id="searchQuery" oninput="renderInvoices()" placeholder="Escribe para buscar...">
+                </div>
+            </div>
+
             <div class="invoice-table-container">
                 <table class="invoice-table">
                     <thead>
                         <tr>
-                            <th># Documento</th>
+                            <th>No. Documento</th>
+                            <th>Tipo</th>
                             <th>Cliente</th>
                             <th>Fecha</th>
                             <th>Total</th>
@@ -1222,53 +1269,66 @@
                         </tr>
                     </thead>
                     <tbody id="invoicesTableBody">
-                        </tbody>
+                        <tr><td colspan="7" style="text-align: center;">Cargando documentos...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </section>
 
         <section id="settingsSection" class="section">
-            <h2>Ajustes</h2>
-            <div class="form-group">
-                <label for="companyName">Nombre de la Empresa:</label>
-                <input type="text" id="companyName">
-            </div>
-            <div class="form-group">
-                <label for="companyAddress">Dirección de la Empresa:</label>
-                <input type="text" id="companyAddress">
-            </div>
-            <div class="form-group">
-                <label for="companyPhone">Teléfono de la Empresa:</label>
-                <input type="text" id="companyPhone">
-            </div>
-            <div class="form-group">
-                <label for="companyEmail">Correo Electrónico de la Empresa:</label>
-                <input type="email" id="companyEmail">
-            </div>
-            <div class="form-group">
-                <label for="companyNIT">NIT / C.C. de la Empresa:</label>
-                <input type="text" id="companyNIT">
-            </div>
+            <h2>Ajustes de la Empresa</h2>
+            <form id="settingsForm">
+                <h3>Información de la Empresa (Para PDF)</h3>
+                <div class="form-group">
+                    <label for="companyName">Nombre de la Empresa:</label>
+                    <input type="text" id="companyName" name="companyName" required>
+                </div>
+                <div class="form-group">
+                    <label for="companyAddress">Dirección:</label>
+                    <input type="text" id="companyAddress" name="companyAddress">
+                </div>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="companyPhone">Teléfono:</label>
+                        <input type="text" id="companyPhone" name="companyPhone">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="companyEmail">Email:</label>
+                        <input type="text" id="companyEmail" name="companyEmail">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="companyNIT">Código Empresarial / NIT:</label>
+                        <input type="text" id="companyNIT" name="companyNIT">
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label for="companyLogoFile">Logo de la Empresa (PNG/JPG):</label>
-                <input type="file" id="companyLogoFile" accept="image/png, image/jpeg" onchange="previewCompanyLogo(event)">
-                <img id="companyLogoPreview" style="max-width: 150px; height: auto; margin-top: 10px; display: none;" alt="Previsualización del Logo">
-                <button type="button" class="btn btn-danger btn-sm" onclick="clearCompanyLogo()" style="margin-top: 10px; display: block;">Limpiar Logo</button>
-            </div>
+                <h3>Logo de la Empresa (Para PDF)</h3>
+                <div class="form-group">
+                    <label for="companyLogoFile">Subir Logo (PNG o JPEG):</label>
+                    <input type="file" id="companyLogoFile" name="companyLogoFile" accept="image/png, image/jpeg" onchange="previewCompanyLogo(event)">
+                </div>
+                <div class="image-preview-container" style="display: flex; justify-content: flex-start; border: none; padding: 0;">
+                    <div class="image-preview-item" style="width: 150px; height: 150px; background-color: white;">
+                        <img id="companyLogoPreview" src="" alt="Previsualización del Logo" style="display: none; object-fit: contain;">
+                    </div>
+                </div>
+                <div class="button-group" style="justify-content: flex-start; border-top: none; padding-top: 0;">
+                    <button type="button" class="btn btn-danger" onclick="clearCompanyLogo()"><i class="fas fa-times"></i> Quitar Logo</button>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Guardar Ajustes</button>
+                </div>
+            </form>
 
-            <div class="button-group" style="justify-content: flex-start;">
-                <button type="button" class="btn btn-primary" onclick="saveSettings()">Guardar Ajustes</button>
-            </div>
-            
             <h3 style="margin-top: 40px;">Gestión de Datos</h3>
-            <div class="button-group" style="justify-content: flex-start; padding-top: 0; border-top: none;">
-                <button type="button" class="btn btn-danger" onclick="confirmDeleteAllData()">Eliminar Todos los Datos</button>
+            <p>**ADVERTENCIA:** Esta acción eliminará permanentemente todos los datos de facturas y ajustes guardados en este navegador (LocalStorage).</p>
+            <div class="button-group" style="justify-content: flex-start;">
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteAllData()"><i class="fas fa-trash"></i> Eliminar Todos los Datos</button>
             </div>
         </section>
-    </div>
 
-    <div id="pdfTemplate" class="pdf-template">
+    </div> <div id="pdfTemplate" class="pdf-template">
         <div class="pdf-header">
             <div class="pdf-header-info">
                 <h1 id="pdfHeaderCompanyName">OSCAR OSPINO | CRIOSER SOLUTIONS</h1>
@@ -1295,101 +1355,110 @@
                 <p><strong>Fecha:</strong> <span id="pdfFechaFactura"></span></p>
                 <p><strong>Estado:</strong> <span id="pdfEstado"></span></p>
                 <p><strong>Correo:</strong> <span id="pdfCorreo"></span></p>
-                <p><strong>Teléfono:</strong> <span id="pdfTelefono"></span></p>
             </div>
         </div>
 
         <table class="pdf-items-table">
             <thead>
                 <tr>
-                    <th style="width: 30%;">Descripción Principal</th>
-                    <th style="width: 30%;">Descripción Adicional</th>
-                    <th class="text-right" style="width: 10%;">Cant.</th>
-                    <th class="text-right" style="width: 15%;">P. Unitario</th>
-                    <th class="text-right" style="width: 15%;">Total</th>
+                    <th style="width: 30%;">DESCRIPCIÓN PRINCIPAL</th>
+                    <th style="width: 25%;">DESCRIPCIÓN ADICIONAL</th>
+                    <th style="width: 10%;" class="text-right">CANT.</th>
+                    <th style="width: 15%;" class="text-right">P. UNITARIO</th>
+                    <th style="width: 20%;" class="text-right">TOTAL</th>
                 </tr>
             </thead>
             <tbody id="pdfItemsTableBody">
-            </tbody>
+                </tbody>
         </table>
-
-        <div class="pdf-total-section">
-            <div style="font-weight: 400; font-size: 10pt;">
-                <span>Subtotal:</span>
-                <span id="pdfSubtotal"></span>
-            </div>
-        </div>
-        <div class="pdf-total-section" style="margin-top: 5pt; padding-top: 0; border-top: none;">
-            <div style="font-weight: 400; font-size: 10pt;">
-                <span>Impuesto (<span id="pdfImpuestoPct">0</span>%):</span>
-                <span id="pdfImpuestoVal"></span>
-            </div>
-        </div>
-        <div class="pdf-total-section" style="margin-top: 5pt; padding-top: 0; border-top: none;">
-            <div style="font-weight: 400; font-size: 10pt;">
-                <span>Descuento:</span>
-                <span id="pdfDescuentoVal"></span>
-            </div>
-        </div>
-        <div class="pdf-total-section" style="margin-top: 10pt;">
-            <div>
-                <span>TOTAL:</span>
-                <span id="pdfTotal"></span>
-            </div>
-        </div>
-        <div class="pdf-notes">
-            <h4>Notas / Observaciones</h4>
-            <p id="pdfNotas"></p>
-        </div>
-        <div class="pdf-page-break-container">
-            <div class="pdf-images-section">
-                <h4 id="pdfImagesTitle">Imágenes del Trabajo</h4>
-                <div id="pdfImagesContainer" class="pdf-images-container">
+        
+        <div style="flex: 1;"></div> <div style="display: flex; flex-direction: column; align-items: flex-end;">
+            <div class="pdf-total-section" style="border-top: 2pt solid var(--primary-color); margin-top: 20pt; padding-top: 10pt;">
+                <div>
+                    <label>Subtotal:</label>
+                    <span id="pdfSubtotal"></span>
                 </div>
             </div>
-        </div> <div class="pdf-footer">
-            <p>Gracias por tu preferencia.</p>
-            <p>Este documento es una <span id="pdfTipoDocumentoFooter"></span> generada digitalmente. OSCAR OSPINO | CRIOSER SOLUTIONS © <span id="pdfCurrentYear"></span>.</p>
+            <div class="pdf-total-section">
+                <div>
+                    <label id="pdfImpuestoLabel">Impuesto (0%):</label>
+                    <span id="pdfImpuestoValDisplay"></span>
+                </div>
+            </div>
+            <div class="pdf-total-section">
+                <div>
+                    <label>Descuento:</label>
+                    <span id="pdfDescuento"></span>
+                </div>
+            </div>
+            <div class="pdf-total-section" style="font-size: 14pt; border-top: 2pt solid var(--primary-color);">
+                <div>
+                    <label>TOTAL:</label>
+                    <span id="pdfTotal"></span>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div id="customAlertOverlay" class="custom-alert-overlay">
-        <div id="customAlertBox" class="custom-alert-box">
-            <h3 id="customAlertTitle"></h3>
-            <p id="customAlertMessage"></p>
-            <div id="customAlertButtons" class="alert-buttons"></div>
+        
+        <div class="pdf-notes">
+            <h4>Notas / Observaciones</h4>
+            <p id="pdfNotas">Sin notas adicionales.</p>
         </div>
-    </div>
-    <div class="toast-container"></div>
 
+        <div class="pdf-footer">
+            <p>Documento generado por OSCAR OSPINO | CRIOSER SOLUTIONS. Gracias por preferir nuestros servicios.</p>
+            <p style="margin-top: 5pt;">Página 1 de <span id="pdfTotalPagesTop">1</span> | Generado el: <span id="pdfGenerationDate"></span></p>
+        </div>
+
+        <div class="pdf-page-break-container">
+            </div>
+
+        </div>
     <script>
-        // Variables globales para almacenar datos
+        const STORAGE_KEY = 'invoicesData';
+        const SETTINGS_STORAGE_KEY = 'companySettings';
         let invoices = [];
-        let currentEditingInvoiceId = null; // Para saber si estamos editando una factura
-        const LOCAL_STORAGE_KEY = 'osc_criosersolutions_facturas_data'; // Updated key
-        const SETTINGS_STORAGE_KEY = 'osc_criosersolutions_settings'; // Updated key
-        const LAST_NUMBER_KEY = 'osc_criosersolutions_last_document_numbers'; // Updated key
-
-        // Objeto global para almacenar los ajustes
         let settings = {};
+        let currentEditingInvoiceId = null;
+        let selectedImages = []; // Array para almacenar Base64 de las imágenes
 
-        // Array para almacenar las imágenes seleccionadas en Base64
-        let selectedImages = [];
+        // --- FUNCIONES DE UTILIDAD GENERAL ---
 
-        // Función para mostrar mensajes de alerta (Toast)
+        // Función para mostrar/ocultar secciones
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.sidebar ul li a').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`.sidebar ul li a[onclick*="${sectionId}"]`).classList.add('active');
+
+            if (sectionId === 'manageInvoicesSection') {
+                renderInvoices();
+            } else if (sectionId === 'createInvoiceSection' && !currentEditingInvoiceId) {
+                resetForm(); // Asegurar que el formulario esté listo para una nueva factura
+            } else if (sectionId === 'settingsSection') {
+                loadSettings();
+            }
+        }
+
+        // Función de alerta personalizada tipo toast
         function showAlert(message, type = 'info', duration = 3000) {
             const toastContainer = document.querySelector('.toast-container');
             const toast = document.createElement('div');
             toast.classList.add('toast', type);
+
             let icon = '';
             switch (type) {
                 case 'success': icon = 'fas fa-check-circle'; break;
-                case 'error': icon = 'fas fa-times-circle'; break;
+                case 'error': icon = 'fas fa-exclamation-circle'; break;
                 case 'warning': icon = 'fas fa-exclamation-triangle'; break;
                 case 'info': default: icon = 'fas fa-info-circle'; break;
             }
-            toast.innerHTML = `<i class="${icon}"></i> <span>${message}</span>`;
 
+            toast.innerHTML = `<i class="${icon}"></i> <span>${message}</span>`;
             toastContainer.prepend(toast); // Agregar al principio para que los nuevos aparezcan arriba
 
             // Mostrar el toast
@@ -1444,63 +1513,46 @@
 
             btnOk.addEventListener('click', handleConfirm);
             btnCancel.addEventListener('click', handleCancel);
+
             customAlertOverlay.classList.add('visible');
         }
 
-        // Función de gestión de datos
+
+        // --- FUNCIONES DE PERSISTENCIA (LocalStorage) ---
+
+        // Cargar datos de localStorage
         function loadData() {
-            // Cargar facturas
-            const storedInvoices = localStorage.getItem(LOCAL_STORAGE_KEY);
+            const storedInvoices = localStorage.getItem(STORAGE_KEY);
             if (storedInvoices) {
                 invoices = JSON.parse(storedInvoices);
-            } else {
-                invoices = [];
             }
-
-            // Cargar ajustes
-            const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-            if (storedSettings) {
-                settings = JSON.parse(storedSettings);
-            } else {
-                settings = {}; // Inicializar si no hay ajustes guardados
-            }
+            loadSettings();
         }
 
+        // Guardar datos en localStorage
         function saveData() {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(invoices));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(invoices));
+            renderInvoices(); // Asegurarse de que el resumen y la tabla se actualicen
         }
 
-        function clearAllData() {
-            localStorage.removeItem(LOCAL_STORAGE_KEY);
-            localStorage.removeItem(SETTINGS_STORAGE_KEY);
-            localStorage.removeItem(LAST_NUMBER_KEY);
-            invoices = [];
-            settings = {};
-            currentEditingInvoiceId = null;
-            selectedImages = [];
-            loadSettings(); // Recargar ajustes por defecto
-            renderInvoices(); // Limpiar la tabla
-            resetForm(); // Limpiar el formulario
-            showAlert('Todos los datos han sido eliminados. La aplicación se ha reiniciado.', 'success');
-        }
-
-        function confirmDeleteAllData() {
-            showConfirm(
-                '¡ADVERTENCIA! ¿Estás seguro de que quieres eliminar TODAS las facturas, ajustes y datos de la aplicación? Esta acción es irreversible.',
-                clearAllData
-            );
-        }
-
-        // Funciones de Ajustes
+        // Cargar ajustes de la empresa
         function loadSettings() {
             const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
             if (storedSettings) {
                 settings = JSON.parse(storedSettings);
             } else {
-                settings = {}; // Inicializar si no hay ajustes guardados
+                // Configuración por defecto si no hay nada guardado
+                settings = {
+                    companyName: 'OSCAR OSPINO | CRIOSER SOLUTIONS',
+                    companyAddress: 'Dirección de la Empresa',
+                    companyPhone: 'Teléfono: (XXX) XXX-XXXX',
+                    companyEmail: 'Email: tu_correo@empresa.com',
+                    companyNIT: 'Código Empresarial: XXX.XXX.XXX-X',
+                    companyLogoBase64: '' // Base64 del logo
+                };
             }
-
-            // Poblar campos del formulario de ajustes
+            
+            // Llenar el formulario de ajustes
             document.getElementById('companyName').value = settings.companyName || '';
             document.getElementById('companyAddress').value = settings.companyAddress || '';
             document.getElementById('companyPhone').value = settings.companyPhone || '';
@@ -1531,9 +1583,8 @@
             settings.companyPhone = document.getElementById('companyPhone').value.trim();
             settings.companyEmail = document.getElementById('companyEmail').value.trim();
             settings.companyNIT = document.getElementById('companyNIT').value.trim();
-            
             // companyLogoBase64 ya se actualiza en previewCompanyLogo
-            
+
             localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings)); // Guardar ajustes
             updatePdfHeaderInfo(); // Actualizar el template del PDF
             showAlert('Ajustes guardados correctamente.', 'success');
@@ -1558,154 +1609,59 @@
             document.getElementById('companyLogoFile').value = '';
             document.getElementById('companyLogoPreview').src = '';
             document.getElementById('companyLogoPreview').style.display = 'none';
-            delete settings.companyLogoBase64; 
-            localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings)); // Save updated settings
-            showAlert('Logo limpiado correctamente.', 'info');
-            updatePdfHeaderInfo(); // Update PDF header in case it was showing the logo
+            delete settings.companyLogoBase64;
+            localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+            updatePdfHeaderInfo();
+            showAlert('Logo eliminado correctamente.', 'info');
         }
 
-        // Función para cambiar de sección
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
-
-            // Actualizar clase activa en la navegación
-            document.querySelectorAll('.sidebar ul li a').forEach(link => {
-                link.classList.remove('active');
-            });
-            document.querySelector(`.sidebar ul li a[onclick*="${sectionId}"]`).classList.add('active');
-
-            // Cargar ajustes si la sección es 'Ajustes'
-            if (sectionId === 'settingsSection') {
-                loadSettings();
-            }
-
-            // Asegurar que los campos de encabezado estén desbloqueados si NO estamos en edición
-            if (sectionId === 'createInvoiceSection' && currentEditingInvoiceId === null) {
-                toggleHeaderClientFields(false);
-            }
-            
-            // Re-renderizar facturas si volvemos a la gestión de facturas (por si se edito o guardo)
-            if (sectionId === 'manageInvoicesSection') {
-                renderInvoices();
-            }
-        }
-
-        // Función para añadir un nuevo ítem a la factura
-        function addItem(item = {}) {
-            const itemsContainer = document.getElementById('itemsContainer');
-            const itemRow = document.createElement('div');
-            itemRow.classList.add('item-row');
-            itemRow.innerHTML = `
-                <div class="form-group">
-                    <label>Descripción Principal:</label>
-                    <input type="text" class="item-descripcion" value="${item.descripcion || ''}" placeholder="Servicio, Producto..." required>
-                </div>
-                <div class="form-group">
-                    <label>Descripción Adicional:</label>
-                    <input type="text" class="item-descripcion-adicional" value="${item.descripcionAdicional || ''}" placeholder="Detalles adicionales...">
-                </div>
-                <div class="form-group">
-                    <label>Cantidad:</label>
-                    <input type="number" class="item-cantidad" value="${item.cantidad || 1}" min="1" oninput="calculateTotal()" required>
-                </div>
-                <div class="form-group">
-                    <label>P. Unitario:</label>
-                    <input type="number" class="item-precio-unitario" value="${item.precioUnitario || 0}" min="0" step="0.01" oninput="calculateTotal()" required>
-                </div>
-                <div class="form-group">
-                    <label>Total Ítem:</label>
-                    <span class="item-total-display">$0.00</span>
-                </div>
-                <button type="button" class="remove-item-btn" onclick="removeItem(this)"><i class="fas fa-times-circle"></i></button>
-            `;
-            itemsContainer.appendChild(itemRow);
-            calculateTotal();
-        }
-
-        // Función para eliminar un ítem de la factura
-        function removeItem(button) {
-            button.closest('.item-row').remove();
-            calculateTotal();
-        }
-
-        // Función para calcular los totales de la factura
-        function calculateTotal() {
-            let subtotal = 0;
-            document.querySelectorAll('.item-row').forEach(row => {
-                const cantidad = parseFloat(row.querySelector('.item-cantidad').value) || 0;
-                const precioUnitario = parseFloat(row.querySelector('.item-precio-unitario').value) || 0;
-                const totalItem = cantidad * precioUnitario;
-                subtotal += totalItem;
-                row.querySelector('.item-total-display').textContent = `$${totalItem.toFixed(2)}`;
-            });
-
-            const impuestoPct = parseFloat(document.getElementById('impuesto').value) || 0;
-            const descuento = parseFloat(document.getElementById('descuento').value) || 0;
-
-            const impuestoVal = subtotal * (impuestoPct / 100);
-            
-            // Total = Subtotal + Impuesto - Descuento
-            let total = subtotal + impuestoVal - descuento;
-            if (total < 0) total = 0; // Asegurar que el total no sea negativo
-
-            // Actualizar displays
-            document.getElementById('subtotalDisplay').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('pdfImpuestoVal').textContent = `$${impuestoVal.toFixed(2)}`;
-            document.getElementById('totalDisplay').textContent = `$${total.toFixed(2)}`;
-        }
-
-        // Funciones para manejar la persistencia del número de factura
+        // Obtener el objeto de los últimos números de documento
         function getLastDocumentNumbers() {
-            return JSON.parse(localStorage.getItem(LAST_NUMBER_KEY)) || {};
+            const stored = localStorage.getItem('lastDocumentNumbers');
+            return stored ? JSON.parse(stored) : {};
         }
 
-        function updateLastInvoiceNumber(invoiceNumber) {
-            const parts = invoiceNumber.split('-');
-            if (parts.length < 3) return; // Validación básica
-            
-            const prefix = parts[0];
-            const yearStr = parts[1];
-            const numberStr = parts[2];
-            
-            const year = parseInt(yearStr);
-            const number = parseInt(numberStr);
-
-            let lastNumbers = getLastDocumentNumbers();
-            if (!lastNumbers[year]) {
-                lastNumbers[year] = {};
-            }
-
-            // Solo actualiza si el número de la factura guardada es mayor
-            if (!lastNumbers[year][prefix] || number > lastNumbers[year][prefix]) {
-                lastNumbers[year][prefix] = number;
-                localStorage.setItem(LAST_NUMBER_KEY, JSON.stringify(lastNumbers));
-            }
+        // Guardar el objeto de los últimos números de documento
+        function saveLastDocumentNumbers(numbers) {
+            localStorage.setItem('lastDocumentNumbers', JSON.stringify(numbers));
         }
 
-        // Función para generar el número de factura/documento
+        function confirmDeleteAllData() {
+            showConfirm('¿Estás seguro de que quieres eliminar TODOS los datos (facturas y ajustes) de este sistema? Esta acción es irreversible.', () => {
+                localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(SETTINGS_STORAGE_KEY);
+                localStorage.removeItem('lastDocumentNumbers');
+                invoices = [];
+                loadSettings(); // Recargar ajustes por defecto
+                renderInvoices();
+                resetForm();
+                showAlert('Todos los datos han sido eliminados.', 'success');
+            });
+        }
+
+        // --- FUNCIONES DE FORMULARIO DE FACTURACIÓN ---
+
+        // Generación de número de factura
         function generateInvoiceNumber() {
-            const selectedType = document.getElementById('tipoDocumento').value;
-            const currentYear = new Date().getFullYear();
-            let lastNumbers = getLastDocumentNumbers();
-
+            const tipoDocumento = document.getElementById('tipoDocumento').value;
             let prefix = '';
-            switch (selectedType) {
-                case 'Factura de Servicio / Venta':
-                    prefix = 'FSV';
+
+            switch (tipoDocumento) {
+                case 'FAC':
+                    prefix = 'FAC';
                     break;
-                case 'Cotización':
+                case 'COT':
                     prefix = 'COT';
                     break;
-                case 'Orden de Servicio':
-                    // MODIFICACIÓN 4: Prefijo ORS para Orden de Servicio
-                    prefix = 'ORS'; 
+                case 'ORD':
+                    prefix = 'ORD';
                     break;
                 default:
                     prefix = 'DOC';
             }
+
+            const currentYear = new Date().getFullYear();
+            const lastNumbers = getLastDocumentNumbers();
 
             if (!lastNumbers[currentYear]) {
                 lastNumbers[currentYear] = {};
@@ -1731,6 +1687,81 @@
             document.getElementById('numeroFactura').value = newInvoiceNumber;
         }
 
+
+        // Función para añadir un ítem al formulario
+        function addItem(item = {}) {
+            const itemsContainer = document.getElementById('itemsContainer');
+            const itemRow = document.createElement('div');
+            itemRow.classList.add('item-row');
+            
+            // Set default values if not provided (for new item)
+            item.descripcion = item.descripcion || '';
+            item.descripcionAdicional = item.descripcionAdicional || '';
+            item.cantidad = item.cantidad || 1;
+            item.precioUnitario = item.precioUnitario || 0;
+
+            itemRow.innerHTML = `
+                <div class="form-group">
+                    <label>Descripción Principal:</label>
+                    <input type="text" class="item-descripcion" value="${item.descripcion}" placeholder="Nombre del servicio o producto..." required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción Adicional:</label>
+                    <input type="text" class="item-descripcion-adicional" value="${item.descripcionAdicional}" placeholder="Detalles adicionales...">
+                </div>
+                <div class="form-group">
+                    <label>Cantidad:</label>
+                    <input type="number" class="item-cantidad" value="${item.cantidad}" min="1" oninput="calculateTotal()" required>
+                </div>
+                <div class="form-group">
+                    <label>P. Unitario:</label>
+                    <input type="number" class="item-precio-unitario" value="${item.precioUnitario}" min="0" step="0.01" oninput="calculateTotal()" required>
+                </div>
+                <div class="form-group">
+                    <label>Total Ítem:</label>
+                    <span class="item-total-display">$0.00</span>
+                </div>
+                <button type="button" class="remove-item-btn" onclick="removeItem(this)"><i class="fas fa-times-circle"></i></button>
+            `;
+            
+            itemsContainer.appendChild(itemRow);
+            calculateTotal();
+        }
+
+        // Función para eliminar un ítem de la factura
+        function removeItem(button) {
+            button.closest('.item-row').remove();
+            calculateTotal();
+        }
+
+        // Función para calcular los totales de la factura
+        function calculateTotal() {
+            let subtotal = 0;
+            document.querySelectorAll('.item-row').forEach(row => {
+                const cantidad = parseFloat(row.querySelector('.item-cantidad').value) || 0;
+                const precioUnitario = parseFloat(row.querySelector('.item-precio-unitario').value) || 0;
+                const totalItem = cantidad * precioUnitario;
+                
+                subtotal += totalItem;
+                row.querySelector('.item-total-display').textContent = `$${totalItem.toFixed(2)}`;
+            });
+
+            const impuestoPct = parseFloat(document.getElementById('impuesto').value) || 0;
+            const descuento = parseFloat(document.getElementById('descuento').value) || 0;
+
+            const impuestoVal = subtotal * (impuestoPct / 100);
+
+            // Total = Subtotal + Impuesto - Descuento
+            let total = subtotal + impuestoVal - descuento;
+
+            if (total < 0) total = 0; // Asegurar que el total no sea negativo
+
+            // Actualizar displays
+            document.getElementById('subtotalDisplay').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('pdfImpuestoVal').textContent = `$${impuestoVal.toFixed(2)}`; // Se usa en el input de descuento
+            document.getElementById('totalDisplay').textContent = `$${total.toFixed(2)}`;
+        }
+
         // Envío del formulario
         document.getElementById('invoiceForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -1738,7 +1769,7 @@
 
             // Validar que al menos un ítem haya sido añadido
             if (document.querySelectorAll('.item-row').length === 0) {
-                showAlert('Debe añadir al menos un ítem a la factura.', 'error');
+                showAlert('Debe añadir al menos un ítem al documento.', 'error');
                 return;
             }
 
@@ -1759,10 +1790,11 @@
             // Reemplazar , por . y limpiar $ para asegurar el parsing
             const cleanTotal = document.getElementById('totalDisplay').textContent.replace('$', '').replace(',', '.').trim();
             const cleanSubtotal = document.getElementById('subtotalDisplay').textContent.replace('$', '').replace(',', '.').trim();
-            
+            const cleanImpuestoVal = document.getElementById('pdfImpuestoVal').textContent.replace('$', '').replace(',', '.').trim();
+
             // Construir el objeto de datos
             let invoiceData = {
-                id: currentEditingInvoiceId || Date.now(),
+                id: currentEditingInvoiceId || Date.now(), // Usar ID existente o generar uno nuevo
                 tipoDocumento: form.tipoDocumento.value,
                 fechaFactura: form.fechaFactura.value,
                 numeroFactura: form.numeroFactura.value,
@@ -1777,47 +1809,60 @@
                 items: items,
                 impuesto: parseFloat(form.impuesto.value) || 0,
                 descuento: parseFloat(form.descuento.value) || 0,
-                subtotal: parseFloat(cleanSubtotal) || 0, // Subtotal pre-tax
-                total: parseFloat(cleanTotal) || 0,
+                subtotal: parseFloat(cleanSubtotal),
+                total: parseFloat(cleanTotal),
+                impuestoVal: parseFloat(cleanImpuestoVal), // Usar el valor calculado para precisión
                 notas: form.notas.value.trim(),
-                imagenes: [...selectedImages],
-                estado: form.estadoFactura.value
+                imagenes: [...selectedImages], // Usar las imágenes cargadas
+                estado: form.estadoFactura.value 
             };
 
-            // MODIFICACIÓN 1: Guardar o actualizar la factura
-            if (currentEditingInvoiceId) {
-                // Es una edición
-                const invoiceIndex = invoices.findIndex(inv => inv.id === currentEditingInvoiceId);
-                if (invoiceIndex !== -1) {
-                    invoices[invoiceIndex] = invoiceData;
-                }
-            } else {
-                // Es una nueva factura
-                invoices.push(invoiceData);
-                updateLastInvoiceNumber(invoiceData.numeroFactura);
-            }
+            const isNew = currentEditingInvoiceId === null;
             
-            saveData(); // Guarda en localStorage
-            resetForm(); // Limpia el formulario
-            renderInvoices(); // Renderiza la tabla de gestión y el resumen
-            showSection('manageInvoicesSection'); // Redirige a la gestión de facturas
-            showAlert('Documento guardado exitosamente.', 'success');
-        });
+            if (isNew) {
+                // Guardar el número de factura para la próxima generación
+                const parts = invoiceData.numeroFactura.split('-');
+                const prefix = parts[0];
+                const year = parts[1];
+                const number = parseInt(parts[2]);
 
-        // Función para bloquear/desbloquear campos de encabezado/cliente
-        function toggleHeaderClientFields(isReadOnly) {
+                const lastNumbers = getLastDocumentNumbers();
+                lastNumbers[year][prefix] = number;
+                saveLastDocumentNumbers(lastNumbers);
+
+                invoices.push(invoiceData);
+                showAlert(`Documento ${invoiceData.numeroFactura} creado y guardado.`, 'success');
+            } else {
+                const index = invoices.findIndex(inv => inv.id === currentEditingInvoiceId);
+                if (index !== -1) {
+                    invoices[index] = invoiceData;
+                    showAlert(`Documento ${invoiceData.numeroFactura} actualizado correctamente.`, 'success');
+                }
+            }
+
+            saveData();
+            resetForm(); // Limpiar el formulario y preparar para la siguiente factura
+        });
+        
+        // Bloquear campos para edición (solo para modo "ver" o duplicar)
+        function toggleFormReadOnly(isReadOnly) {
+            const form = document.getElementById('invoiceForm');
             const fields = [
-                'tipoDocumento', 'fechaFactura', 'clienteNombre', 'clienteDireccion', 
-                'clienteNIT', 'solicitante', 'correo', 'telefono'
+                'tipoDocumento', 'fechaFactura', 'clienteNombre', 'clienteDireccion', 'clienteNIT',
+                'solicitante', 'correo', 'telefono', 'impuesto', 'descuento', 'notas', 'estadoFactura'
             ];
-            fields.forEach(id => {
-                const element = document.getElementById(id);
+
+            fields.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
                 if (element) {
                     element.readOnly = isReadOnly;
-                    // Manejar campos especiales (como select)
-                    if (id === 'tipoDocumento') {
-                        element.style.pointerEvents = isReadOnly ? 'none' : 'auto';
-                        element.style.backgroundColor = isReadOnly ? '#f0f0f0' : '';
+                    element.disabled = isReadOnly;
+
+                    if (element.id === 'numeroFactura' || element.id === 'tipoDocumento') {
+                        // Numero de factura siempre es readonly/disabled
+                        element.readOnly = true;
+                        element.disabled = false;
+                        element.style.backgroundColor = '#f0f0f0';
                     } else if (isReadOnly) {
                         element.style.backgroundColor = '#f0f0f0'; // Fondo para visualización de bloqueo
                     } else {
@@ -1825,7 +1870,39 @@
                     }
                 }
             });
+            
+            // Manejar los ítems de la lista individualmente
+            document.querySelectorAll('.item-row input, .item-row select').forEach(input => {
+                input.readOnly = isReadOnly;
+                input.disabled = isReadOnly;
+                input.style.backgroundColor = isReadOnly ? '#f0f0f0' : '';
+            });
+
+            // Ocultar/mostrar botón de añadir/eliminar ítem en modo lectura
+            document.querySelector('.add-item-btn').style.display = isReadOnly ? 'none' : 'inline-block';
+            document.querySelectorAll('.remove-item-btn').forEach(btn => {
+                btn.style.display = isReadOnly ? 'none' : 'flex';
+            });
+            
+            // Ocultar/mostrar el campo de carga de imágenes y el de notas
+            document.getElementById('imageUpload').disabled = isReadOnly;
+            document.getElementById('imageUpload').style.backgroundColor = isReadOnly ? '#f0f0f0' : '';
+            document.getElementById('notas').readOnly = isReadOnly;
+            document.getElementById('notas').style.backgroundColor = isReadOnly ? '#f0f0f0' : '';
+
+            // Ocultar botones de acción si está en modo lectura (excepto PDF/Duplicar/Editar)
+            const submitButton = document.querySelector('.btn-success');
+            const resetButton = document.querySelector('.btn-secondary');
+            
+            submitButton.style.display = isReadOnly ? 'none' : 'inline-block';
+            resetButton.style.display = isReadOnly ? 'none' : 'inline-block';
+            
+            // Actualizar el título
+            document.getElementById('invoiceFormTitle').textContent = isReadOnly ? 
+                `Ver Documento N° ${document.getElementById('numeroFactura').value}` : 
+                (currentEditingInvoiceId ? `Editar Documento N° ${document.getElementById('numeroFactura').value}` : 'Crear Nuevo Documento');
         }
+
 
         // Limpiar formulario
         function resetForm() {
@@ -1843,84 +1920,96 @@
             calculateTotal();
             generateInvoiceNumber(); // Generar un nuevo número para una nueva factura
             currentEditingInvoiceId = null; // Asegurarse de que no estamos en modo edición
-            toggleHeaderClientFields(false); 
+            
+            toggleFormReadOnly(false); // Asegurar que el formulario esté editable
+            
             addItem(); // Añadir un ítem vacío
         }
 
+
+        // --- FUNCIONES DE GESTIÓN DE FACTURAS ---
+
         // Renderizar tabla de facturas
-        function renderInvoices(filteredInvoices = invoices) {
+        function renderInvoices() {
+            // Filtrado de la lista
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterType = document.getElementById('filterType').value;
+            const searchQuery = document.getElementById('searchQuery').value.toLowerCase().trim();
+
+            let filteredInvoices = invoices.filter(invoice => {
+                const statusMatch = filterStatus === 'all' || invoice.estado === filterStatus;
+                const typeMatch = filterType === 'all' || invoice.tipoDocumento === filterType;
+                const searchMatch = searchQuery === '' || 
+                                    invoice.numeroFactura.toLowerCase().includes(searchQuery) || 
+                                    invoice.cliente.nombre.toLowerCase().includes(searchQuery);
+                
+                return statusMatch && typeMatch && searchMatch;
+            });
+            
             const invoicesTableBody = document.getElementById('invoicesTableBody');
             invoicesTableBody.innerHTML = '';
 
             // Ordenar facturas por fecha descendente
             const sortedInvoices = [...invoices].sort((a, b) => new Date(b.fechaFactura) - new Date(a.fechaFactura));
-            
-            // MODIFICACIÓN 2: Lógica de cálculo de totales para el Resumen (itera sobre TODAS las facturas)
-            let totalInvoicesCount = 0;
+
+            // Lógica de cálculo de totales para el Resumen (itera sobre TODAS las facturas)
+            let totalInvoicesCount = invoices.length;
             let totalEarnings = 0;
             let invoicesThisYearCount = 0;
             const currentYear = new Date().getFullYear();
 
             invoices.forEach(invoice => {
-                // Contar todos los documentos
-                totalInvoicesCount++;
-
-                // La ganancia total solo se suma si es una Factura de Servicio / Venta
-                if (invoice.tipoDocumento === 'Factura de Servicio / Venta') {
-                    // Nota: Idealmente se deberían sumar solo si el estado es 'realizado', 
-                    // pero según la solicitud se suma si es una Factura.
-                    totalEarnings += invoice.total;
+                if (invoice.estado === 'realizado') {
+                    // Sumar solo si es una factura (FAC) y está realizada
+                    if (invoice.tipoDocumento === 'FAC' || invoice.tipoDocumento === 'ORD') {
+                        totalEarnings += invoice.total;
+                    }
                 }
-
-                // Contar documentos de este año
-                const invoiceYear = new Date(invoice.fechaFactura).getFullYear();
-                if (invoiceYear === currentYear) {
+                if (new Date(invoice.fechaFactura).getFullYear() === currentYear) {
                     invoicesThisYearCount++;
                 }
             });
 
-            // Poblar tarjetas de resumen
+            // Actualizar tarjetas de resumen
             document.getElementById('totalInvoices').textContent = totalInvoicesCount;
             document.getElementById('totalEarnings').textContent = `$${totalEarnings.toFixed(2)}`;
             document.getElementById('invoicesThisYear').textContent = invoicesThisYearCount;
 
-            // Populate main invoices table (filtered)
+
+            // Llenar tabla de gestionar documentos
             if (filteredInvoices.length === 0) {
-                invoicesTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay facturas para mostrar.</td></tr>';
+                invoicesTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No se encontraron documentos.</td></tr>';
             } else {
                 filteredInvoices.forEach(invoice => {
                     const row = invoicesTableBody.insertRow();
-                    const statusClass = invoice.estado.toLowerCase().replace(/ /g, '');
                     row.innerHTML = `
                         <td>${invoice.numeroFactura}</td>
+                        <td>${invoice.tipoDocumento}</td>
                         <td>${invoice.cliente.nombre}</td>
                         <td>${invoice.fechaFactura}</td>
                         <td>$${invoice.total.toFixed(2)}</td>
                         <td>
-                            <select class="status-select ${statusClass}" onchange="updateInvoiceStatus(${invoice.id}, this.value)">
+                            <select class="status-select status-${invoice.estado}" onchange="updateInvoiceStatus(${invoice.id}, this.value)">
                                 <option value="pendiente" ${invoice.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
-                                <option value="realizado" ${invoice.estado === 'realizado' ? 'selected' : ''}>Realizado</option>
                                 <option value="enproceso" ${invoice.estado === 'enproceso' ? 'selected' : ''}>En Proceso</option>
+                                <option value="realizado" ${invoice.estado === 'realizado' ? 'selected' : ''}>Realizado</option>
                             </select>
                         </td>
                         <td class="actions">
-                            <button class="btn btn-primary" onclick="editInvoice(${invoice.id})"><i class="fas fa-edit"></i> Editar</button>
-                            <button class="btn btn-secondary" onclick="generatePdf(${invoice.id})"><i class="fas fa-file-pdf"></i> PDF</button>
-                            <button class="btn btn-info" onclick="duplicateInvoice(${invoice.id})"><i class="fas fa-copy"></i> Duplicar</button>
+                            <button class="btn btn-primary" onclick="generatePdf(${invoice.id})"><i class="fas fa-file-pdf"></i> PDF</button>
                             <button class="btn btn-danger" onclick="confirmDeleteInvoice(${invoice.id})"><i class="fas fa-trash"></i></button>
                         </td>
                     `;
                 });
             }
 
-
             // Populate latest invoices table (first 5 recent invoices)
             const latestInvoicesTableBody = document.getElementById('latestInvoicesTableBody');
             latestInvoicesTableBody.innerHTML = '';
             const latestInvoices = sortedInvoices.slice(0, 5); // Get the 5 most recent
-
+            
             if (latestInvoices.length === 0) {
-                latestInvoicesTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay facturas recientes.</td></tr>';
+                latestInvoicesTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay documentos recientes.</td></tr>';
             } else {
                 latestInvoices.forEach(invoice => {
                     const row = latestInvoicesTableBody.insertRow();
@@ -1939,12 +2028,16 @@
         function editInvoice(id) {
             const invoice = invoices.find(inv => inv.id === id);
             if (invoice) {
-                currentEditingInvoiceId = id; // Establecer el ID de la factura que se está editando
+                currentEditingInvoiceId = id;
+
+                // Llenar campos principales
                 document.getElementById('invoiceId').value = invoice.id;
                 document.getElementById('tipoDocumento').value = invoice.tipoDocumento;
+                document.getElementById('numeroFactura').value = invoice.numeroFactura;
                 document.getElementById('fechaFactura').value = invoice.fechaFactura;
-                document.getElementById('numeroFactura').value = invoice.numeroFactura; // Mantener el número existente
-
+                document.getElementById('estadoFactura').value = invoice.estado;
+                
+                // Llenar datos del cliente
                 document.getElementById('clienteNombre').value = invoice.cliente.nombre;
                 document.getElementById('clienteDireccion').value = invoice.cliente.direccion;
                 document.getElementById('clienteNIT').value = invoice.cliente.nit;
@@ -1959,54 +2052,62 @@
                 // Cargar imágenes
                 selectedImages = [...invoice.imagenes];
                 renderImagePreviews();
-                
+
+                // Totales y notas
                 document.getElementById('impuesto').value = invoice.impuesto;
                 document.getElementById('descuento').value = invoice.descuento;
                 document.getElementById('notas').value = invoice.notas;
-                document.getElementById('estadoFactura').value = invoice.estado; // Set the status
 
                 calculateTotal();
-                showSection('createInvoiceSection'); // Volver a la sección de crear factura para editar
-                toggleHeaderClientFields(true); // Bloquear campos de encabezado/cliente para edición
+                toggleFormReadOnly(false); // Abrir para edición
+                showSection('createInvoiceSection');
+            } else {
+                showAlert('Factura no encontrada.', 'error');
             }
         }
 
         // Duplicar factura
         function duplicateInvoice(id) {
-            const original = invoices.find(inv => inv.id === id);
-            if (original) {
-                showSection('createInvoiceSection');
-                
-                // Limpiar el formulario y prepararlo para un nuevo documento
-                resetForm(); 
+            const invoice = invoices.find(inv => inv.id === id);
+            if (invoice) {
+                currentEditingInvoiceId = null; // Es una nueva factura, no editar la existente
 
-                // Llenar campos con datos duplicados
-                document.getElementById('tipoDocumento').value = original.tipoDocumento;
-                // El número de factura se genera automáticamente con resetForm/generateInvoiceNumber
-                
-                document.getElementById('clienteNombre').value = original.cliente.nombre;
-                document.getElementById('clienteDireccion').value = original.cliente.direccion;
-                document.getElementById('clienteNIT').value = original.cliente.nit;
-                document.getElementById('solicitante').value = original.cliente.solicitante;
-                document.getElementById('correo').value = original.cliente.correo;
-                document.getElementById('telefono').value = original.cliente.telefono;
-                
-                // Añadir ítems
+                // Llenar campos principales (Generar nuevo número, limpiar ID)
+                document.getElementById('invoiceId').value = '';
+                document.getElementById('tipoDocumento').value = invoice.tipoDocumento;
+                generateInvoiceNumber(); // Genera un nuevo número
+                document.getElementById('fechaFactura').valueAsDate = new Date(); // Fecha actual
+
+                // Llenar datos del cliente
+                document.getElementById('clienteNombre').value = invoice.cliente.nombre;
+                document.getElementById('clienteDireccion').value = invoice.cliente.direccion;
+                document.getElementById('clienteNIT').value = invoice.cliente.nit;
+                document.getElementById('solicitante').value = invoice.cliente.solicitante;
+                document.getElementById('correo').value = invoice.cliente.correo;
+                document.getElementById('telefono').value = invoice.cliente.telefono;
+
+                // Limpiar y añadir ítems
                 document.getElementById('itemsContainer').innerHTML = '';
-                original.items.forEach(item => addItem(item));
+                invoice.items.forEach(item => addItem(item));
 
-                // Copiar imágenes
-                selectedImages = [...original.imagenes];
+                // Cargar imágenes
+                selectedImages = [...invoice.imagenes];
                 renderImagePreviews();
 
-                document.getElementById('impuesto').value = original.impuesto;
-                document.getElementById('descuento').value = original.descuento;
-                document.getElementById('notas').value = original.notas;
-                document.getElementById('estadoFactura').value = 'pendiente'; // Siempre comienza como pendiente
+                // Totales y notas
+                document.getElementById('impuesto').value = invoice.impuesto;
+                document.getElementById('descuento').value = invoice.descuento;
+                document.getElementById('notas').value = invoice.notas;
                 
+                // El estado siempre se resetea a 'pendiente' para una duplicación
+                document.getElementById('estadoFactura').value = 'pendiente';
+
                 calculateTotal();
-                toggleHeaderClientFields(false); // Desbloquear campos
-                showAlert('Documento duplicado. Revise y guarde la nueva versión.', 'info');
+                toggleFormReadOnly(false); // Asegurar que el formulario esté editable
+                showSection('createInvoiceSection');
+                showAlert(`Documento N° ${invoice.numeroFactura} duplicado como nuevo documento.`, 'info');
+            } else {
+                showAlert('Factura original no encontrada.', 'error');
             }
         }
 
@@ -2015,17 +2116,22 @@
             const invoiceIndex = invoices.findIndex(inv => inv.id === id);
             if (invoiceIndex !== -1) {
                 invoices[invoiceIndex].estado = newStatus;
-                saveData();
-                renderInvoices(); // Re-renderizar para actualizar la tabla y el estilo
-                showAlert(`Estado de factura ${invoices[invoiceIndex].numeroFactura} cambiado a "${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}".`, 'success');
+                saveData(); // Llama a renderInvoices internamente
+                // Re-renderizar para actualizar la tabla y el estilo
+                const selectElement = document.querySelector(`.status-select[onchange*="${id}"]`);
+                if (selectElement) {
+                    selectElement.className = `status-select status-${newStatus}`;
+                }
+                
+                showAlert(`Estado de documento ${invoices[invoiceIndex].numeroFactura} cambiado a "${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}".`, 'success');
             } else {
-                showAlert('Error: No se encontró la factura para actualizar el estado.', 'error');
+                showAlert('Error: No se encontró el documento para actualizar el estado.', 'error');
             }
         }
 
         // Confirmar eliminación de factura
         function confirmDeleteInvoice(id) {
-            showConfirm('¿Estás seguro de que quieres eliminar esta factura? Esta acción no se puede deshacer.', () => deleteInvoice(id));
+            showConfirm('¿Estás seguro de que quieres eliminar este documento? Esta acción no se puede deshacer.', () => deleteInvoice(id));
         }
 
         // Eliminar factura
@@ -2034,65 +2140,41 @@
             invoices = invoices.filter(inv => inv.id !== id);
             if (invoices.length < initialLength) {
                 saveData();
-                renderInvoices();
-                showAlert('Factura eliminada exitosamente.', 'success');
+                showAlert('Documento eliminado correctamente.', 'success');
             } else {
-                showAlert('Error al eliminar la factura.', 'error');
+                showAlert('Error al eliminar el documento.', 'error');
             }
         }
 
-        // Filtrar facturas
-        function filterInvoices() {
-            const searchTerm = document.getElementById('searchInvoice').value.toLowerCase();
-            const filtered = invoices.filter(invoice => 
-                invoice.numeroFactura.toLowerCase().includes(searchTerm) || 
-                invoice.cliente.nombre.toLowerCase().includes(searchTerm) || 
-                invoice.tipoDocumento.toLowerCase().includes(searchTerm)
-            );
-            renderInvoices(filtered);
-        }
 
-        // Función para actualizar la información de la empresa en el PDF template
-        function updatePdfHeaderInfo() {
-            document.getElementById('pdfHeaderCompanyName').textContent = settings.companyName || 'OSCAR OSPINO | CRIOSER SOLUTIONS';
-            document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress || 'Dirección de la Empresa';
-            document.getElementById('pdfCompanyPhone').textContent = `Teléfono: ${settings.companyPhone || '(XXX) XXX-XXXX'}`;
-            document.getElementById('pdfCompanyEmail').textContent = `Email: ${settings.companyEmail || 'tu_correo@empresa.com'}`;
-            document.getElementById('pdfCompanyNIT').textContent = `Código Empresarial: ${settings.companyNIT || 'XXX.XXX.XXX-X'}`;
-            
-            const pdfCompanyLogo = document.getElementById('pdfCompanyLogo');
-            if (settings.companyLogoBase64) {
-                pdfCompanyLogo.src = settings.companyLogoBase64;
-                pdfCompanyLogo.style.display = 'block';
-            } else {
-                pdfCompanyLogo.style.display = 'none'; // Ocultar si no hay logo
-            }
-        }
+        // --- FUNCIONES DE WHATSAPP ---
 
-        // Función para redireccionar a WhatsApp con el mensaje predefinido
-        function redirectToWhatsApp(clientName, invoiceNumber, rawPhoneNumber) {
-            // Limpiar el número y asegurar el formato para WhatsApp
-            let cleanedNumber = rawPhoneNumber.replace(/\D/g, ''); 
-            // Asumiendo +57 como prefijo para Colombia si es un número de 10 dígitos sin prefijo
-            if (!cleanedNumber.startsWith('57') && cleanedNumber.length === 10) {
-                cleanedNumber = '57' + cleanedNumber;
-            } else if (cleanedNumber.length === 7) {
-                // Si es un número fijo sin código de área, no se puede enviar WhatsApp
-                showAlert('El número de teléfono parece ser un número fijo. No se puede enviar WhatsApp.', 'warning');
+        function redirectToWhatsApp(clientName, invoiceNumber, phoneNumber) {
+            const cleanedNumber = phoneNumber.replace(/\D/g, ''); // Eliminar caracteres no numéricos
+            if (cleanedNumber.length < 10) {
+                showAlert('Número de teléfono inválido para WhatsApp.', 'warning');
                 return;
             }
-
-            // URL encode del mensaje
-            const message = encodeURIComponent(`Hola ${clientName}, Este es su documento ${invoiceNumber} por el servicio brindado por Crioser Solutions. Gracias por su preferencia. Documento adjunto.`);
             
-            window.open(`https://api.whatsapp.com/send?phone=${cleanedNumber}&text=${message}`, '_blank');
+            const typeText = document.getElementById('tipoDocumento').options[document.getElementById('tipoDocumento').selectedIndex].text.toLowerCase();
+
+            const message = `Hola ${clientName}, te adjunto el ${typeText} N° ${invoiceNumber} de OSCAR OSPINO | CRIOSER SOLUTIONS. ¡Gracias por preferir nuestros servicios!`;
+            const encodedMessage = encodeURIComponent(message);
+
+            // MODIFICACIÓN 3: Se cambia a api.whatsapp.com/send para intentar priorizar WhatsApp Business.
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanedNumber}&text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
         }
 
-        // Función para manejar la carga de imágenes en el formulario
+
+        // --- FUNCIONES PARA MANEJO DE IMÁGENES ---
+
         function handleImageUpload(event) {
             const files = event.target.files;
-            if (files.length + selectedImages.length > 6) {
-                showAlert('Solo se permiten un máximo de 6 imágenes.', 'warning');
+
+            // Límite de 10 imágenes
+            if (selectedImages.length + files.length > 10) {
+                showAlert('Solo se permiten un máximo de 10 imágenes.', 'warning');
                 event.target.value = ''; // Limpiar la selección
                 return;
             }
@@ -2123,15 +2205,127 @@
             });
         }
 
-        // Eliminar una imagen de la selección
+        // Función para eliminar una imagen
         function removeImage(index) {
             selectedImages.splice(index, 1);
             renderImagePreviews();
-            showAlert('Imagen eliminada de la factura.', 'info', 2000);
         }
+
+        // --- FUNCIONES PARA GENERACIÓN DE PDF (html2canvas y jsPDF) ---
         
+        // Función para actualizar la información del encabezado del PDF
+        function updatePdfHeaderInfo() {
+            document.getElementById('pdfHeaderCompanyName').textContent = settings.companyName || 'Nombre de la Empresa';
+            document.getElementById('pdfCompanyAddress').textContent = settings.companyAddress || 'Dirección de la Empresa';
+            document.getElementById('pdfCompanyPhone').textContent = settings.companyPhone || 'Teléfono: (XXX) XXX-XXXX';
+            document.getElementById('pdfCompanyEmail').textContent = settings.companyEmail || 'Email: tu_correo@empresa.com';
+            document.getElementById('pdfCompanyNIT').textContent = settings.companyNIT || 'Código Empresarial: XXX.XXX.XXX-X';
+
+            const logoElement = document.getElementById('pdfCompanyLogo');
+            if (settings.companyLogoBase64) {
+                logoElement.src = settings.companyLogoBase64;
+                logoElement.style.display = 'block';
+            } else {
+                logoElement.style.display = 'none';
+                logoElement.src = '';
+            }
+        }
+
+        // Función auxiliar para renderizar imágenes en páginas separadas con jsPDF
+        function addImagesToPDF(doc, images, MARGIN) {
+            if (images.length === 0) return;
+
+            const MAX_IMAGE_WIDTH_PT = 240; // Ancho máximo por imagen (para 2 por fila)
+            const MAX_HEIGHT_PER_PAGE = 800; // Altura útil por página
+            const IMAGE_PADDING = 10; // Espaciado entre imágenes y bordes
+            const PADDING_TOP = 40; // Espacio para el título de la sección de imágenes
+
+            // Iniciar la primera página de imágenes
+            doc.addPage();
+            let currentImageY = MARGIN; // Iniciar Y después del margen superior
+            
+            // Título de la sección de imágenes
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 139); // Azul Rey
+            doc.text("Imágenes Adjuntas al Documento", MARGIN, currentImageY);
+            currentImageY += PADDING_TOP; // Dejar espacio después del título
+
+            doc.setFontSize(9);
+            doc.setTextColor(51, 51, 51); // Dark Gray
+
+            images.forEach((base64Image, index) => {
+                // Calcular dimensiones
+                let img = new Image();
+                img.src = base64Image;
+                const imgWidthPx = img.width;
+                const imgHeightPx = img.height;
+                const aspectRatio = imgWidthPx / imgHeightPx;
+                
+                let imageHeightPt = 0;
+                let imageWidthPt = 0;
+
+                // Definir la altura por defecto y calcular el ancho para mantener el aspect ratio
+                // Limitamos la altura a 180pt para que quepan varias por página
+                imageHeightPt = 180; 
+                imageWidthPt = imageHeightPt * aspectRatio;
+
+                // Si la imagen es demasiado ancha para un lado (mitad de la página), reajustar.
+                if (imageWidthPt > MAX_IMAGE_WIDTH_PT) {
+                    imageWidthPt = MAX_IMAGE_WIDTH_PT;
+                    imageHeightPt = imageWidthPt / aspectRatio;
+                }
+                
+                // Si es un índice par (imagen izquierda), se inicia una nueva fila
+                const isLeft = index % 2 === 0;
+                
+                if (isLeft) {
+                    // Si la nueva fila excede la altura de la página, añadir nueva página
+                    if (currentImageY + imageHeightPt + IMAGE_PADDING > MAX_HEIGHT_PER_PAGE) {
+                        doc.addPage();
+                        currentImageY = MARGIN; // Reiniciar Y en la nueva página
+                        
+                        // Añadir el título de la sección en la nueva página
+                        doc.setFontSize(14);
+                        doc.setTextColor(0, 0, 139); // Azul Rey
+                        doc.text("Imágenes Adjuntas al Documento (Continuación)", MARGIN, currentImageY);
+                        currentImageY += PADDING_TOP; // Dejar espacio después del título
+                        
+                        doc.setFontSize(9);
+                        doc.setTextColor(51, 51, 51); // Dark Gray
+                    }
+                }
+                
+                // Posición X (para centrar y permitir 2 por fila)
+                const pageCenter = 612 / 2;
+                const gap = 15; // Espacio central entre las 2 imágenes
+                let imageX = 0;
+
+                if (isLeft) {
+                    // Imagen izquierda: Centrada a la mitad izquierda
+                    imageX = pageCenter - (imageWidthPt + (gap / 2)); 
+                } else {
+                    // Imagen derecha: Centrada a la mitad derecha
+                    imageX = pageCenter + (gap / 2);
+                }
+                
+                // Añadir la imagen
+                doc.addImage(base64Image, 'JPEG', imageX, currentImageY, imageWidthPt, imageHeightPt);
+
+                if (!isLeft) {
+                    // Si es la imagen derecha, se completa la fila y se incrementa Y
+                    currentImageY += imageHeightPt + IMAGE_PADDING;
+                }
+            });
+        }
+
+
         // Función principal para generar el PDF
         async function generatePdf(id = null) {
+            // Asegurarse de que el cálculo de totales esté al día (solo aplica si se genera desde la sección de creación)
+            if (!id) {
+                calculateTotal();
+            }
+
             let invoiceToPrint = null;
 
             if (id) {
@@ -2141,18 +2335,27 @@
                 // Si no se proporciona ID, toma los datos del formulario actual (para creación/edición)
                 const form = document.getElementById('invoiceForm');
                 
-                // Validar que al menos un ítem haya sido añadido
+                // Validar que al menos un ítem haya sido añadido (si no se genera desde gestión)
                 if (document.querySelectorAll('.item-row').length === 0) {
-                    showAlert('Debe añadir al menos un ítem a la factura antes de generar el PDF.', 'error');
+                    showAlert('Debe añadir al menos un ítem al documento antes de generar el PDF.', 'error');
                     return;
                 }
-
-                // Asegurarse de que el cálculo de totales esté al día
-                calculateTotal();
+                
+                // Recolectar items
+                let items = [];
+                document.querySelectorAll('.item-row').forEach(row => {
+                    items.push({
+                        descripcion: row.querySelector('.item-descripcion').value.trim(),
+                        descripcionAdicional: row.querySelector('.item-descripcion-adicional').value.trim(),
+                        cantidad: parseFloat(row.querySelector('.item-cantidad').value) || 0,
+                        precioUnitario: parseFloat(row.querySelector('.item-precio-unitario').value) || 0,
+                    });
+                });
 
                 // Reemplazar , por . y limpiar $ para asegurar el parsing
                 const cleanTotal = document.getElementById('totalDisplay').textContent.replace('$', '').replace(',', '.').trim();
                 const cleanSubtotal = document.getElementById('subtotalDisplay').textContent.replace('$', '').replace(',', '.').trim();
+                const cleanImpuestoVal = document.getElementById('pdfImpuestoVal').textContent.replace('$', '').replace(',', '.').trim();
 
                 invoiceToPrint = {
                     id: currentEditingInvoiceId || Date.now(), // Usar ID existente o generar uno nuevo
@@ -2167,170 +2370,190 @@
                         correo: form.correo.value.trim(),
                         telefono: form.telefono.value.trim()
                     },
-                    items: [],
+                    items: items,
                     impuesto: parseFloat(form.impuesto.value) || 0,
                     descuento: parseFloat(form.descuento.value) || 0,
-                    subtotal: parseFloat(cleanSubtotal) || 0,
-                    total: parseFloat(cleanTotal) || 0,
+                    subtotal: parseFloat(cleanSubtotal),
+                    total: parseFloat(cleanTotal),
+                    impuestoVal: parseFloat(cleanImpuestoVal), // Usar el valor calculado para precisión
                     notas: form.notas.value.trim(),
-                    imagenes: [...selectedImages], // Usar las imágenes cargadas en el formulario
-                    estado: form.estadoFactura.value // Incluir el estado
+                    imagenes: [...selectedImages], // Usar las imágenes cargadas
+                    estado: form.estadoFactura.value
                 };
-
-                document.querySelectorAll('.item-row').forEach(row => {
-                    invoiceToPrint.items.push({
-                        descripcion: row.querySelector('.item-descripcion').value.trim(),
-                        descripcionAdicional: row.querySelector('.item-descripcion-adicional').value.trim(),
-                        cantidad: parseFloat(row.querySelector('.item-cantidad').value) || 0,
-                        precioUnitario: parseFloat(row.querySelector('.item-precio-unitario').value) || 0
-                    });
-                });
             }
 
             if (!invoiceToPrint) {
-                showAlert('No se encontraron datos para generar el PDF.', 'error');
+                showAlert('No se pudo encontrar o generar el documento para imprimir.', 'error');
                 return;
             }
+
+            // Calculamos subtotal sin impuestos (solo suma de ítems)
+            let subtotalPreTax = invoiceToPrint.items.reduce((sum, item) => sum + (item.cantidad * item.precioUnitario), 0);
             
-            // Obtener valores necesarios para la MODIFICACIÓN 3
-            const subtotalPreTax = invoiceToPrint.subtotal;
-            // MODIFICACIÓN 3.b: Subtotal debe incluir el 19% para el campo Subtotal en el PDF
-            const IMPUESTO_FIJO = 0.19; 
-            const subtotal_del_PDF = subtotalPreTax * (1 + IMPUESTO_FIJO); 
-
-            // El Impuesto y Total que se muestran en el PDF son los calculados reales del formulario
-            const impuestoPct = invoiceToPrint.impuesto;
-            const impuestoVal = subtotalPreTax * (impuestoPct / 100);
-            const descuentoVal = invoiceToPrint.descuento;
-
+            // Llenar el template HTML con los datos
             const pdfTemplate = document.getElementById('pdfTemplate');
-
-            // 1. Actualizar la información de la empresa
-            updatePdfHeaderInfo();
-
-            // 2. Llenar el template del PDF con los datos de la factura
+            
+            // 1. Datos del Cliente y Documento
+            document.getElementById('pdfTipoDocumento').textContent = invoiceToPrint.tipoDocumento === 'FAC' ? 'FACTURA DE SERVICIO / VENTA' : 
+                                                                    invoiceToPrint.tipoDocumento === 'COT' ? 'COTIZACIÓN' :
+                                                                    invoiceToPrint.tipoDocumento === 'ORD' ? 'ORDEN DE TRABAJO' : 'DOCUMENTO';
+            document.getElementById('pdfNumeroFactura').textContent = invoiceToPrint.numeroFactura;
+            document.getElementById('pdfFechaFactura').textContent = invoiceToPrint.fechaFactura;
+            document.getElementById('pdfEstado').textContent = invoiceToPrint.estado.charAt(0).toUpperCase() + invoiceToPrint.estado.slice(1);
             document.getElementById('pdfClienteNombre').textContent = invoiceToPrint.cliente.nombre;
             document.getElementById('pdfClienteDireccion').textContent = invoiceToPrint.cliente.direccion;
             document.getElementById('pdfClienteNIT').textContent = invoiceToPrint.cliente.nit;
             document.getElementById('pdfSolicitante').textContent = invoiceToPrint.cliente.solicitante;
             document.getElementById('pdfCorreo').textContent = invoiceToPrint.cliente.correo;
             document.getElementById('pdfTelefono').textContent = invoiceToPrint.cliente.telefono;
+            document.getElementById('pdfNotas').textContent = invoiceToPrint.notas || 'Sin notas adicionales.';
 
-            document.getElementById('pdfTipoDocumento').textContent = invoiceToPrint.tipoDocumento;
-            document.getElementById('pdfTipoDocumentoFooter').textContent = invoiceToPrint.tipoDocumento.toLowerCase();
-            document.getElementById('pdfNumeroFactura').textContent = invoiceToPrint.numeroFactura;
-            document.getElementById('pdfFechaFactura').textContent = invoiceToPrint.fechaFactura; // Usar el formato YYYY-MM-DD
-            document.getElementById('pdfEstado').textContent = invoiceToPrint.estado.charAt(0).toUpperCase() + invoiceToPrint.estado.slice(1);
-            
-            // Llenar tabla de ítems
+            // 2. Ítems de la tabla
             const pdfItemsTableBody = document.getElementById('pdfItemsTableBody');
             pdfItemsTableBody.innerHTML = '';
-            let totalItemsSum = 0;
             invoiceToPrint.items.forEach(item => {
-                const total = item.cantidad * item.precioUnitario;
-                totalItemsSum += total;
-                pdfItemsTableBody.innerHTML += `
-                    <tr>
-                        <td>${item.descripcion}</td>
-                        <td>${item.descripcionAdicional}</td>
-                        <td class="text-right">${item.cantidad}</td>
-                        <td class="text-right">$${item.precioUnitario.toFixed(2)}</td>
-                        <td class="text-right">$${total.toFixed(2)}</td>
-                    </tr>
+                const row = pdfItemsTableBody.insertRow();
+                const totalItem = item.cantidad * item.precioUnitario;
+                row.innerHTML = `
+                    <td>${item.descripcion}</td>
+                    <td>${item.descripcionAdicional}</td>
+                    <td class="text-right">${item.cantidad}</td>
+                    <td class="text-right">$${item.precioUnitario.toFixed(2)}</td>
+                    <td class="text-right">$${totalItem.toFixed(2)}</td>
                 `;
             });
 
-            // Aplicar MODIFICACIÓN 3.b
-            document.getElementById('pdfSubtotal').textContent = `$${subtotal_del_PDF.toFixed(2)}`;
-
-            // Totales restantes
-            document.getElementById('pdfImpuestoPct').textContent = impuestoPct;
-            document.getElementById('pdfImpuestoVal').textContent = `$${impuestoVal.toFixed(2)}`;
-            document.getElementById('pdfDescuentoVal').textContent = `$${descuentoVal.toFixed(2)}`;
+            // 3. Totales
+            document.getElementById('pdfSubtotal').textContent = `$${subtotalPreTax.toFixed(2)}`;
+            document.getElementById('pdfImpuestoLabel').textContent = `Impuesto (${invoiceToPrint.impuesto.toFixed(2)}%):`;
+            document.getElementById('pdfImpuestoValDisplay').textContent = `$${invoiceToPrint.impuestoVal.toFixed(2)}`;
+            document.getElementById('pdfDescuento').textContent = `-$${invoiceToPrint.descuento.toFixed(2)}`;
             document.getElementById('pdfTotal').textContent = `$${invoiceToPrint.total.toFixed(2)}`;
-            
-            // Notas y Observaciones
-            document.getElementById('pdfNotas').textContent = invoiceToPrint.notas || 'N/A';
-            
-            // Imágenes
-            const pdfImagesContainer = document.getElementById('pdfImagesContainer');
-            pdfImagesContainer.innerHTML = '';
-            const pdfImagesSection = document.getElementById('pdfImagesTitle');
-            
-            if (invoiceToPrint.imagenes && invoiceToPrint.imagenes.length > 0) {
-                pdfImagesSection.style.display = 'block';
-                invoiceToPrint.imagenes.forEach((imgBase64, index) => {
-                    pdfImagesContainer.innerHTML += `<img src="${imgBase64}" alt="Imagen del trabajo ${index + 1}">`;
-                });
+            document.getElementById('pdfGenerationDate').textContent = new Date().toLocaleDateString();
+
+
+            // Mostrar/ocultar el separador de página
+            if (invoiceToPrint.imagenes.length > 0) {
+                // Si hay imágenes, el template debe estar en modo de dos páginas
+                document.querySelector('.pdf-page-break-container').style.display = 'block';
             } else {
-                pdfImagesSection.style.display = 'none';
-                // Ocultar el contenedor de salto de página si no hay imágenes, para que no haya una página en blanco.
-                document.querySelector('.pdf-page-break-container').style.display = 'none'; 
+                // Si no hay imágenes, el template se renderizará como una sola página
+                document.querySelector('.pdf-page-break-container').style.display = 'none';
             }
 
-            // Pie de página
-            document.getElementById('pdfCurrentYear').textContent = new Date().getFullYear();
-
-            // 3. Generar y descargar el PDF usando html2canvas y jsPDF
-            pdfTemplate.style.display = 'flex'; // Mostrar temporalmente el template para la captura
-            document.body.classList.add('print-mode'); // Oculta el resto de la UI
+            // Mostrar el template para que html2canvas pueda capturarlo
+            pdfTemplate.style.display = 'flex';
+            document.body.classList.add('print-mode'); // Opcional: para estilos de impresión específicos
+            window.scrollTo(0, 0); // Ir al inicio de la página para la captura
             
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'pt', 'letter');
-            const pageHeightPt = pdf.internal.pageSize.getHeight(); // Altura de la página en puntos (pt)
+            // Esperar un momento para el renderizado (puede ser necesario en algunos navegadores)
+            await new Promise(resolve => setTimeout(resolve, 100));
 
-            // --- LÓGICA DE SALTO DE PÁGINA FORZADO ---
+            // Generación de PDF usando html2canvas y jspdf
+            const { jsPDF } = window.jspdf;
             const templateRect = pdfTemplate.getBoundingClientRect();
+            
+            let firstPageContentHeightPx = templateRect.height; // Por defecto es la altura total
             const breakElement = document.querySelector('.pdf-page-break-container');
             
-            let firstPageContentHeightPx = templateRect.height; // Valor por defecto
-
             if (breakElement.style.display !== 'none') {
+                // Si el separador está visible, calcular la altura de la primera página
                 const breakRect = breakElement.getBoundingClientRect();
                 // Altura del contenido de la primera página ANTES del salto, en píxeles.
-                firstPageContentHeightPx = breakRect.top - templateRect.top; 
+                firstPageContentHeightPx = breakRect.top - templateRect.top;
             }
-            
+
+
             html2canvas(pdfTemplate, { 
                 scale: 2, // Aumentar la escala para mejor calidad
                 logging: false, 
                 useCORS: true 
             }).then(canvas => {
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                
                 const imgWidth = 612; // Ancho de la carta (pt)
-                const pxPerPt = canvas.width / imgWidth; // Factor de conversión de Píxeles a Puntos (escala 2)
+                const pxPerPt = canvas.width / imgWidth;
+                const totalPdfHeightPt = canvas.height / pxPerPt;
                 
-                // Altura total de la imagen en puntos
-                const imgHeightPt = canvas.height / pxPerPt;
+                // Altura de la primera página de contenido (en pt)
+                const firstPageContentHeightPt = firstPageContentHeightPx / pxPerPt; 
                 
-                // Calcular el punto de quiebre forzado en puntos (pt)
-                const breakPointPt = firstPageContentHeightPx / pxPerPt; 
-                
-                let position = 0; // Posición de corte en el eje Y del canvas (en pt)
+                const pageHeight = 936; // Altura de una página A4/Carta en pt (aprox.)
+                let remainingHeight = totalPdfHeightPt;
+                let currentY = 0;
+                let pageCount = 0;
 
-                // Imprimir la primera página (contenidos hasta el punto de quiebre forzado)
-                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeightPt);
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'pt',
+                    format: [612, 936] // Tamaño Carta
+                });
                 
-                // --- Lógica del Salto de Página ---
-                // Si el salto se aplicó (el elemento de quiebre no se ocultó)
-                if (breakElement.style.display !== 'none' && firstPageContentHeightPx > 0) {
-                    pdf.addPage();
+                // 1. Dibuja la(s) página(s) con el contenido generado por html2canvas
+                // Esto maneja la primera página y los posibles saltos de tabla si es muy larga.
+                for (let y = 0; y < firstPageContentHeightPt; y += pageHeight) {
+                    if (pageCount > 0) doc.addPage();
+
+                    const sliceHeight = Math.min(firstPageContentHeightPt - y, pageHeight);
+                    const sliceY = y;
                     
-                    // Calcular la nueva posición de la imagen para empezar justo después del punto de quiebre
-                    const secondPageStartPos = -(breakPointPt);
+                    // Dibuja la parte de la imagen que corresponde a la primera página de contenido.
+                    doc.addImage(imgData, 'JPEG', 0, -sliceY, imgWidth, totalPdfHeightPt);
                     
-                    // Imprimir el resto del canvas en la nueva página
-                    pdf.addImage(imgData, 'JPEG', 0, secondPageStartPos, imgWidth, imgHeightPt);
+                    currentY = (pageCount === 0) ? sliceHeight : pageHeight;
+                    remainingHeight -= sliceHeight;
+                    pageCount++;
+                }
+
+                // 2. Páginas de imágenes (si existen)
+                if (invoiceToPrint.imagenes.length > 0) {
+                    // El contenido de la primera página ya fue dibujado.
+                    // Ahora, añadimos las imágenes una a una con la función auxiliar
+                    const MARGIN = 50;
+                    addImagesToPDF(doc, invoiceToPrint.imagenes, MARGIN);
+
+                    // El contador de páginas total ahora es (pageCount + imágenes generadas por addImagesToPDF)
+                    // Como addImagesToPDF ya está usando doc.addPage(), el contador de páginas se actualizará
+                    // en el paso final (abajo) para la numeración.
+                }
+
+                // **********************************************
+                // MODIFICACIÓN 7: Numeración de páginas
+                // Usamos el número total de páginas (doc.internal.getNumberOfPages()) y el footer
+                const totalPages = doc.internal.getNumberOfPages();
+                document.getElementById('pdfTotalPagesTop').textContent = totalPages;
+                
+                for (let i = 1; i <= totalPages; i++) {
+                    doc.setPage(i);
+                    // Dibuja el pie de página de las páginas de imágenes
+                    if (i > pageCount) {
+                        doc.setFontSize(8);
+                        doc.setTextColor(102, 102, 102); // Gris
+                        doc.text(`Página ${i} de ${totalPages} | Generado el: ${new Date().toLocaleDateString()}`, doc.internal.pageSize.width - 50, doc.internal.pageSize.height - 20, { align: 'right' });
+                    } else {
+                        // El footer de la primera(s) página(s) ya está en el HTML capturado, 
+                        // pero la paginación podría no estar actualizada, así que la reescribimos si es necesario
+                        // (solo si hay más de 1 página en total).
+                        if (totalPages > 1) {
+                            doc.setFontSize(8);
+                            doc.setTextColor(102, 102, 102); // Gris
+                            // Ajustar posición si el footer HTML es grande.
+                            doc.text(`Página ${i} de ${totalPages} | Generado el: ${new Date().toLocaleDateString()}`, doc.internal.pageSize.width - 50, doc.internal.pageSize.height - 20, { align: 'right' });
+                        }
+                    }
                 }
                 
-                pdf.save(`${invoiceToPrint.numeroFactura}.pdf`); 
+                // **********************************************
                 
-                // Limpiar el estado de visualización temporal
+                // Limpiar después de la generación
                 pdfTemplate.style.display = 'none';
-                document.body.classList.remove('print-mode'); 
+                document.body.classList.remove('print-mode');
                 document.querySelector('.pdf-page-break-container').style.display = 'block'; // Asegurar que se muestre para la próxima vez
-                
-                // --- MODIFICACIÓN 5: Redirección a WhatsApp --- 
+
+                // MODIFICACIÓN 2: Guardar solo con el número de documento
+                doc.save(`${invoiceToPrint.numeroFactura}.pdf`);
+
+                // --- Redirección a WhatsApp --- 
                 if (invoiceToPrint.cliente.telefono) { 
                     const clientName = invoiceToPrint.cliente.nombre || 'Cliente';
                     const invoiceNumber = invoiceToPrint.numeroFactura || 'el documento';
@@ -2340,7 +2563,7 @@
                         invoiceNumber, 
                         invoiceToPrint.cliente.telefono
                     ); 
-                } 
+                }
             });
         }
         
@@ -2348,14 +2571,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             renderInvoices();
-            generateInvoiceNumber(); // Generar el primer número de factura al cargar
+            // REEMPLAZO (MODIFICACIÓN 1) para asegurar la generación de factura y el estado inicial limpio en cualquier dispositivo
+            resetForm(); // Genera el número de factura, limpia y añade un ítem inicial.
             document.getElementById('pdfCurrentYear').textContent = new Date().getFullYear(); // Actualizar año en el footer
             // Set initial company name for the PDF template if available
             updatePdfHeaderInfo();
             // Mostrar la sección de inicio
             showSection('homeSection');
-            // Inicializar un ítem en el formulario
-            addItem(); 
         });
     </script>
 </body>
